@@ -1,0 +1,1808 @@
+<!doctype html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pulso — Norte Consultores</title>
+<style>
+/* =========================================================
+   TOKENS (DESIGN.md §1). Únicos valores literales del CSS.
+   ========================================================= */
+:root {
+  /* Tipografía (§1.2) */
+  --fuente: ui-monospace, "SF Mono", "Cascadia Mono", "Segoe UI Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --texto-metrica: 700 48px/48px var(--fuente);
+  --texto-titulo: 700 28px/32px var(--fuente);
+  --texto-subtitulo: 700 20px/24px var(--fuente);
+  --texto-cuerpo: 400 14px/20px var(--fuente);
+  --texto-etiqueta: 700 12px/16px var(--fuente);
+  --texto-micro: 400 12px/16px var(--fuente);
+
+  /* Espaciado (§1.3) */
+  --espacio-1: 4px;
+  --espacio-2: 8px;
+  --espacio-3: 12px;
+  --espacio-4: 16px;
+  --espacio-6: 24px;
+  --espacio-8: 32px;
+  --espacio-12: 48px;
+  --espacio-16: 64px;
+
+  /* Radio (§1.4) */
+  --radio: 0;
+
+  /* Movimiento (§1.7) */
+  --duracion-instantanea: 80ms;
+  --duracion-rapida: 120ms;
+  --duracion-panel: 200ms;
+  --curva: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Color — tema oscuro (referencia y por defecto) */
+:root,
+:root[data-tema="oscuro"] {
+  color-scheme: dark;
+  --fondo: oklch(0.15 0 0);
+  --superficie: oklch(0.20 0 0);
+  --superficie-alta: oklch(0.25 0 0);
+  --texto: oklch(0.96 0 0);
+  --texto-tenue: oklch(0.74 0 0);
+  --borde: oklch(0.96 0 0);
+  --borde-suave: oklch(0.56 0 0);
+  --acento: oklch(0.92 0.20 120);
+  --acento-tinta: oklch(0.15 0 0);
+  --acento-linea: oklch(0.92 0.20 120);
+  --ganada: oklch(0.80 0.18 150);
+  --ganada-relleno: oklch(0.80 0.18 150);
+  --riesgo: oklch(0.85 0.16 85);
+  --riesgo-relleno: oklch(0.85 0.16 85);
+  --perdida: oklch(0.72 0.17 25);
+  --perdida-relleno: oklch(0.72 0.17 25);
+  --estado-tinta: oklch(0.15 0 0);
+}
+
+/* Color — tema claro (automático) */
+@media (prefers-color-scheme: light) {
+  :root:not([data-tema="oscuro"]) {
+    color-scheme: light;
+    --fondo: oklch(0.97 0 0);
+    --superficie: oklch(1 0 0);
+    --superficie-alta: oklch(0.93 0 0);
+    --texto: oklch(0.15 0 0);
+    --texto-tenue: oklch(0.44 0 0);
+    --borde: oklch(0.15 0 0);
+    --borde-suave: oklch(0.58 0 0);
+    --acento: oklch(0.92 0.20 120);
+    --acento-tinta: oklch(0.15 0 0);
+    --acento-linea: oklch(0.50 0.14 125);
+    --ganada: oklch(0.50 0.13 150);
+    --ganada-relleno: oklch(0.80 0.18 150);
+    --riesgo: oklch(0.52 0.11 70);
+    --riesgo-relleno: oklch(0.85 0.16 85);
+    --perdida: oklch(0.53 0.19 27);
+    --perdida-relleno: oklch(0.72 0.17 25);
+    --estado-tinta: oklch(0.15 0 0);
+  }
+}
+
+/* Color — tema claro (forzado) */
+:root[data-tema="claro"] {
+  color-scheme: light;
+  --fondo: oklch(0.97 0 0);
+  --superficie: oklch(1 0 0);
+  --superficie-alta: oklch(0.93 0 0);
+  --texto: oklch(0.15 0 0);
+  --texto-tenue: oklch(0.44 0 0);
+  --borde: oklch(0.15 0 0);
+  --borde-suave: oklch(0.58 0 0);
+  --acento: oklch(0.92 0.20 120);
+  --acento-tinta: oklch(0.15 0 0);
+  --acento-linea: oklch(0.50 0.14 125);
+  --ganada: oklch(0.50 0.13 150);
+  --ganada-relleno: oklch(0.80 0.18 150);
+  --riesgo: oklch(0.52 0.11 70);
+  --riesgo-relleno: oklch(0.85 0.16 85);
+  --perdida: oklch(0.53 0.19 27);
+  --perdida-relleno: oklch(0.72 0.17 25);
+  --estado-tinta: oklch(0.15 0 0);
+}
+
+/* Bordes y sombras (§1.5, §1.6): dependen del color del tema,
+   por eso se declaran en todo elemento y resuelven con el tema vigente. */
+* {
+  --borde-grueso: 2px solid var(--borde);
+  --borde-fino: 1px solid var(--borde-suave);
+  --sombra-0: none;
+  --sombra-1: 4px 4px 0 0 var(--borde);
+  --sombra-2: 6px 6px 0 0 var(--borde);
+  --sombra-3: 8px 8px 0 0 var(--borde);
+}
+
+/* Reducir movimiento (DESIGN.md §2.5) */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duracion-instantanea: 0ms;
+    --duracion-rapida: 0ms;
+    --duracion-panel: 0ms;
+  }
+}
+
+/* =========================================================
+   BASE
+   ========================================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+  border-radius: var(--radio);
+  /* Cifras tabulares en toda la app (§2.3). !important porque el
+     atajo `font:` reinicia font-variant-numeric en cada elemento. */
+  font-variant-numeric: tabular-nums slashed-zero !important;
+}
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--fondo);
+  color: var(--texto);
+  font: var(--texto-cuerpo);
+  min-height: 100vh;
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible {
+  outline: 3px solid var(--acento-linea);
+  outline-offset: 2px;
+}
+[hidden] { display: none !important; }
+.oculto-visual {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+h1, h2, h3, p { margin: 0; }
+.etiqueta { font: var(--texto-etiqueta); letter-spacing: 0.06em; text-transform: uppercase; color: var(--texto-tenue); }
+.micro { font: var(--texto-micro); color: var(--texto-tenue); }
+.tenue { color: var(--texto-tenue); }
+.num { text-align: right; }
+
+/* =========================================================
+   CABECERA Y NAVEGACIÓN
+   ========================================================= */
+.cabecera {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--espacio-4);
+  padding: var(--espacio-3) var(--espacio-6);
+  border-bottom: var(--borde-grueso);
+  background: var(--superficie);
+}
+.marca { display: flex; flex-direction: column; margin-right: var(--espacio-4); }
+.marca strong { font: var(--texto-subtitulo); letter-spacing: 0.06em; }
+.nav { display: flex; gap: var(--espacio-1); flex: 1; }
+.nav a {
+  font: var(--texto-etiqueta); letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--texto); text-decoration: none;
+  padding: var(--espacio-2) var(--espacio-3);
+  border-bottom: 2px solid transparent;
+}
+.nav a:hover { background: var(--superficie-alta); }
+.nav a[aria-current="page"] { border-bottom-color: var(--acento-linea); }
+.cabecera-acciones { display: flex; gap: var(--espacio-3); align-items: center; flex-wrap: wrap; }
+
+.aviso {
+  display: flex; gap: var(--espacio-3); align-items: center;
+  margin: var(--espacio-4) var(--espacio-6) 0;
+  padding: var(--espacio-3) var(--espacio-4);
+  border: var(--borde-grueso); background: var(--superficie);
+}
+.aviso .simbolo { color: var(--riesgo); font: var(--texto-etiqueta); }
+.aviso[data-tipo="ok"] .simbolo { color: var(--ganada); }
+.aviso[data-tipo="error"] .simbolo { color: var(--perdida); }
+.aviso p { flex: 1; }
+
+main { padding: var(--espacio-12) var(--espacio-6) var(--espacio-16); }
+/* #vista recibe foco por programa al cambiar de vista (lectores de pantalla); no es interactivo */
+#vista:focus { outline: none; }
+
+/* =========================================================
+   MÉTRICAS (§2.2)
+   ========================================================= */
+.metricas {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--espacio-8);
+  margin-bottom: var(--espacio-8);
+}
+.metrica { display: flex; flex-direction: column; gap: var(--espacio-2); }
+.metrica-principal .valor { font: var(--texto-metrica); }
+.metrica-secundaria .valor { font: var(--texto-subtitulo); }
+.valor-riesgo { color: var(--riesgo); }
+.seccion-titulo { font: var(--texto-subtitulo); margin-bottom: var(--espacio-4); }
+
+/* =========================================================
+   BOTÓN (§3.1)
+   ========================================================= */
+.boton {
+  display: inline-flex; align-items: center; gap: var(--espacio-2);
+  height: 40px; padding: 0 var(--espacio-4);
+  font: var(--texto-etiqueta); letter-spacing: 0.06em; text-transform: uppercase;
+  background: var(--superficie); color: var(--texto);
+  border: var(--borde-grueso); box-shadow: var(--sombra-1);
+  cursor: pointer; white-space: nowrap;
+  transition: transform var(--duracion-instantanea) var(--curva), box-shadow var(--duracion-instantanea) var(--curva);
+}
+.boton:hover { transform: translate(-2px, -2px); box-shadow: var(--sombra-2); }
+.boton:active { transform: translate(4px, 4px); box-shadow: var(--sombra-0); }
+.boton.compacto { height: 32px; }
+.boton.primario { background: var(--acento); color: var(--acento-tinta); }
+.boton.peligro { color: var(--perdida); border-color: var(--perdida); }
+.boton.fantasma { background: transparent; border-color: transparent; box-shadow: var(--sombra-0); }
+.boton.fantasma:hover { transform: none; text-decoration: underline; box-shadow: var(--sombra-0); }
+.boton.fantasma:active { transform: none; }
+.boton:disabled, .boton[aria-disabled="true"] {
+  color: var(--texto-tenue); border-color: var(--borde-suave);
+  box-shadow: var(--sombra-0); cursor: default; transform: none;
+}
+.boton.primario:disabled { background: var(--superficie); }
+.atajo { font: var(--texto-micro); }
+.boton.primario .atajo { color: var(--acento-tinta); }
+
+/* =========================================================
+   CHIP DE ETAPA (§3.2)
+   ========================================================= */
+.chips { display: inline-flex; flex-wrap: wrap; gap: 0; }
+.chip {
+  display: inline-flex; align-items: center; gap: var(--espacio-1);
+  height: 24px; padding: 0 var(--espacio-3);
+  font: var(--texto-etiqueta); letter-spacing: 0.06em; text-transform: uppercase;
+  background: var(--superficie); color: var(--texto);
+  border: var(--borde-grueso); white-space: nowrap;
+}
+.chip .n { color: var(--texto-tenue); }
+.chip + .chip { border-left: 0; }
+.chip[data-estado="ganada"] { background: var(--ganada-relleno); color: var(--estado-tinta); }
+.chip[data-estado="perdida"] { background: var(--perdida-relleno); color: var(--estado-tinta); }
+.chip[data-estado="riesgo"] { background: var(--riesgo-relleno); color: var(--estado-tinta); }
+
+/* =========================================================
+   INICIO
+   ========================================================= */
+.dos-columnas { display: grid; grid-template-columns: 1fr 1fr; gap: var(--espacio-8); align-items: start; }
+.bloque { border: var(--borde-grueso); background: var(--superficie); overflow-x: auto; }
+.bloque-cabecera {
+  display: flex; justify-content: space-between; align-items: baseline; gap: var(--espacio-4);
+  padding: var(--espacio-4); border-bottom: var(--borde-grueso);
+}
+.bloque-cabecera h2 { font: var(--texto-subtitulo); }
+.lista { list-style: none; margin: 0; padding: 0; }
+.fila-seguimiento {
+  display: grid; grid-template-columns: 1fr auto; gap: var(--espacio-2) var(--espacio-4);
+  padding: var(--espacio-3) var(--espacio-4); border-bottom: var(--borde-fino); cursor: pointer;
+}
+.lista li:last-child .fila-seguimiento { border-bottom: 0; }
+.fila-seguimiento:hover { background: var(--superficie-alta); }
+.fila-seguimiento strong { display: block; }
+.fila-seguimiento .der { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: var(--espacio-1); }
+.vacio { padding: var(--espacio-16) var(--espacio-4); text-align: center; color: var(--texto-tenue); }
+
+/* =========================================================
+   TABLA (§3.4)
+   ========================================================= */
+.tabla-herramientas { display: flex; flex-wrap: wrap; gap: var(--espacio-3); align-items: center; margin-bottom: var(--espacio-4); }
+.campo-control {
+  height: 40px; padding: 0 var(--espacio-3);
+  background: var(--superficie); color: var(--texto);
+  border: var(--borde-grueso);
+}
+.campo-control::placeholder { color: var(--texto-tenue); }
+.casilla { display: inline-flex; align-items: center; gap: var(--espacio-2); cursor: pointer; }
+/* Casillas y radios rectos (DESIGN §1.4: sin radios) */
+.casilla input {
+  appearance: none; margin: 0; flex: none;
+  width: 16px; height: 16px; display: inline-grid; place-content: center;
+  background: var(--superficie); border: var(--borde-grueso); cursor: pointer;
+}
+.casilla input::before { content: ""; width: 8px; height: 8px; background: transparent; }
+.casilla input:checked::before { background: var(--texto); }
+.tabla-contenedor { overflow: auto; border: var(--borde-grueso); background: var(--superficie); max-height: calc(100vh - 280px); }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: var(--espacio-2) var(--espacio-3); text-align: left; white-space: nowrap; }
+thead th {
+  position: sticky; top: 0; z-index: 1;
+  background: var(--superficie-alta); border-bottom: var(--borde-grueso);
+  font: var(--texto-etiqueta); letter-spacing: 0.06em; text-transform: uppercase;
+}
+thead th button {
+  all: unset; cursor: pointer; display: inline-flex; gap: var(--espacio-1);
+  font: var(--texto-etiqueta); letter-spacing: 0.06em; text-transform: uppercase;
+}
+thead th button:focus-visible { outline: 3px solid var(--acento-linea); outline-offset: 2px; }
+th.num, td.num { text-align: right; }
+th.num button { justify-content: flex-end; }
+tbody tr { height: 40px; border-bottom: var(--borde-fino); }
+tbody tr[data-abrir] { cursor: pointer; }
+tbody tr[data-abrir]:hover { background: var(--superficie-alta); }
+tbody tr[aria-selected="true"] { background: var(--superficie-alta); --borde-estado: 4px solid var(--acento-linea); }
+tbody tr[aria-selected="true"] td:first-child { border-left: var(--borde-estado); }
+/* Filas a todo el ancho dentro de contenedores con scroll: el anillo va hacia adentro para no recortarse */
+tbody tr:focus-visible, .fila-seguimiento:focus-visible, .paleta-entrada input:focus-visible { outline-offset: -3px; }
+tfoot td {
+  position: sticky; bottom: 0; background: var(--superficie);
+  border-top: var(--borde-grueso); font-weight: 700;
+}
+.celda-cliente { font-weight: 700; }
+td.celda-texto { white-space: normal; }
+td .chips { flex-wrap: nowrap; }
+
+/* =========================================================
+   PIPELINE (§3.3)
+   ========================================================= */
+.tablero {
+  display: grid; grid-template-columns: repeat(6, minmax(200px, 1fr));
+  gap: var(--espacio-4); overflow-x: auto; padding-bottom: var(--espacio-4);
+}
+.columna { display: flex; flex-direction: column; gap: var(--espacio-4); min-height: 240px; padding: var(--espacio-2); border: 2px dashed transparent; }
+.columna.destino { border-color: var(--acento-linea); }
+.columna-cabecera { padding-bottom: var(--espacio-3); border-bottom: var(--borde-grueso); }
+.columna-cabecera h2 { font: var(--texto-subtitulo); }
+.tarjeta {
+  position: relative; display: flex; flex-direction: column; gap: var(--espacio-2);
+  padding: var(--espacio-4);
+  background: var(--superficie); border: var(--borde-grueso); box-shadow: var(--sombra-1);
+  cursor: pointer;
+  transition: transform var(--duracion-instantanea) var(--curva), box-shadow var(--duracion-instantanea) var(--curva);
+}
+.tarjeta:hover { transform: translate(-2px, -2px); box-shadow: var(--sombra-2); }
+.tarjeta.arrastrando { box-shadow: var(--sombra-2); }
+.tarjeta[data-estado="riesgo"] { --borde-estado: 4px solid var(--riesgo); }
+.tarjeta[data-estado="ganada"] { --borde-estado: 4px solid var(--ganada); }
+.tarjeta[data-estado="perdida"] { --borde-estado: 4px solid var(--perdida); }
+.tarjeta[data-estado] { border-left: var(--borde-estado); }
+.tarjeta-cabeza { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--espacio-2); min-width: 0; }
+.tarjeta-cliente { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; flex: 1; }
+.tarjeta-nombre { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.tarjeta-monto { display: flex; align-items: baseline; gap: var(--espacio-2); }
+.tarjeta-monto strong { font: var(--texto-subtitulo); }
+.tarjeta-pie {
+  display: flex; justify-content: space-between; gap: var(--espacio-2); flex-wrap: wrap;
+  padding-top: var(--espacio-2); border-top: var(--borde-fino);
+}
+
+/* =========================================================
+   FICHA (§3.5)
+   ========================================================= */
+.ficha {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 10;
+  width: 480px; max-width: 100%;
+  display: flex; flex-direction: column;
+  background: var(--superficie); border-left: var(--borde-grueso); box-shadow: var(--sombra-3);
+  transform: translateX(100%);
+  transition: transform var(--duracion-panel) var(--curva);
+}
+.ficha.abierta { transform: translateX(0); }
+.ficha-cuerpo { flex: 1; overflow-y: auto; padding: var(--espacio-6); display: flex; flex-direction: column; gap: var(--espacio-6); }
+.ficha-cabecera { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--espacio-4); }
+.ficha-cabecera .guardado { margin-top: var(--espacio-2); text-transform: uppercase; }
+.ficha-cifra .valor { font: var(--texto-metrica); }
+.ficha-cifra { display: flex; flex-direction: column; gap: var(--espacio-2); }
+.ficha-cifra-fila { display: flex; flex-wrap: wrap; align-items: center; gap: var(--espacio-4); }
+.datos { display: grid; grid-template-columns: 1fr 1fr; gap: var(--espacio-3) var(--espacio-4); }
+.dato { display: flex; flex-direction: column; gap: var(--espacio-1); min-width: 0; }
+.dato.ancho { grid-column: 1 / -1; }
+.campo {
+  width: 100%; min-height: 32px; padding: var(--espacio-1) var(--espacio-2);
+  background: var(--superficie); color: var(--texto);
+  border: var(--borde-fino);
+}
+.campo:hover { border-color: var(--borde); }
+.campo-titulo { font: var(--texto-titulo); border-color: transparent; padding: 0; }
+.campo[aria-invalid="true"] { border: 2px solid var(--perdida); }
+.error { color: var(--perdida); font: var(--texto-micro); }
+textarea.campo { resize: vertical; min-height: 64px; }
+.actividades { list-style: none; margin: 0; padding: 0; }
+.actividades li { display: flex; flex-direction: column; gap: var(--espacio-1); padding: var(--espacio-3) 0; border-bottom: var(--borde-fino); }
+.ficha-acciones {
+  border-top: var(--borde-grueso); padding: var(--espacio-4) var(--espacio-6);
+  display: flex; flex-direction: column; gap: var(--espacio-3); background: var(--superficie);
+}
+.form-actividad { display: grid; grid-template-columns: 128px 1fr; gap: var(--espacio-2); }
+.form-actividad .boton, .form-actividad .error { grid-column: 1 / -1; }
+.form-actividad .boton { justify-content: center; }
+.ficha-titulo-bloque { flex: 1; min-width: 0; }
+.fila-botones { display: flex; flex-wrap: wrap; gap: var(--espacio-3); }
+.fila-botones .empuje { margin-left: auto; }
+
+/* =========================================================
+   DIÁLOGOS Y PALETA ⌘K (§3.6)
+   ========================================================= */
+dialog {
+  padding: 0; color: var(--texto);
+  background: var(--superficie); border: var(--borde-grueso); box-shadow: var(--sombra-3);
+  max-width: calc(100vw - var(--espacio-8));
+}
+dialog::backdrop { background: transparent; }
+#paleta::backdrop { background: color-mix(in oklch, var(--fondo) 80%, transparent); }
+.dialogo { width: 520px; }
+.dialogo-cuerpo { padding: var(--espacio-6); display: flex; flex-direction: column; gap: var(--espacio-4); }
+.dialogo-cuerpo h2 { font: var(--texto-subtitulo); }
+.dialogo-pie { display: flex; justify-content: flex-end; gap: var(--espacio-3); padding: var(--espacio-4) var(--espacio-6); border-top: var(--borde-grueso); }
+.form-grilla { display: grid; grid-template-columns: 1fr 1fr; gap: var(--espacio-3) var(--espacio-4); }
+.form-grilla .ancho { grid-column: 1 / -1; }
+fieldset { border: var(--borde-fino); margin: 0; padding: var(--espacio-3) var(--espacio-4); display: flex; flex-direction: column; gap: var(--espacio-2); }
+legend { padding: 0 var(--espacio-1); }
+
+.paleta { width: 640px; margin-top: 96px; }
+.paleta[open] { animation: entrar-paleta var(--duracion-rapida) var(--curva); }
+@keyframes entrar-paleta { from { transform: translateY(-8px); } }
+.paleta-entrada { display: flex; align-items: center; gap: var(--espacio-3); padding: 0 var(--espacio-4); border-bottom: var(--borde-grueso); }
+.paleta-entrada span { font: var(--texto-subtitulo); color: var(--texto-tenue); }
+.paleta-entrada input {
+  flex: 1; height: 48px; border: 0; background: transparent; color: var(--texto);
+  font: var(--texto-subtitulo);
+}
+.paleta-entrada input::placeholder { color: var(--texto-tenue); }
+.paleta-resultados { max-height: 400px; overflow-y: auto; padding-bottom: var(--espacio-2); }
+.paleta-grupo { padding: var(--espacio-3) var(--espacio-4) var(--espacio-1); }
+.paleta-item {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--espacio-4);
+  height: 40px; padding: 0 var(--espacio-4); cursor: pointer;
+}
+.paleta-item > span:first-child { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.paleta-item .der { font: var(--texto-micro); color: var(--texto-tenue); white-space: nowrap; }
+.paleta-item[aria-selected="true"] { background: var(--acento); color: var(--acento-tinta); outline: var(--borde-grueso); outline-offset: -2px; }
+.paleta-item[aria-selected="true"] .der { color: var(--acento-tinta); }
+
+/* =========================================================
+   RESPONSIVO
+   ========================================================= */
+@media (max-width: 767px) {
+  main { padding: var(--espacio-6) var(--espacio-4) var(--espacio-12); }
+  .cabecera { padding: var(--espacio-3) var(--espacio-4); }
+  .dos-columnas, .datos, .form-grilla { grid-template-columns: 1fr; }
+  .ficha { width: 100%; }
+  .paleta { margin-top: var(--espacio-4); }
+}
+</style>
+</head>
+<body>
+<header class="cabecera">
+  <div class="marca">
+    <strong>PULSO</strong>
+    <span class="etiqueta">Norte Consultores</span>
+  </div>
+  <nav class="nav" aria-label="Vistas">
+    <a href="#inicio" data-vista="inicio">Inicio</a>
+    <a href="#pipeline" data-vista="pipeline">Pipeline</a>
+    <a href="#tabla" data-vista="tabla">Tabla</a>
+  </nav>
+  <div class="cabecera-acciones">
+    <button type="button" class="boton compacto" id="btn-paleta">Buscar <span class="atajo" id="atajo-paleta">Ctrl K</span></button>
+    <button type="button" class="boton fantasma compacto" id="btn-ajustes">Ajustes</button>
+    <button type="button" class="boton primario" id="btn-nueva">+ Nueva oportunidad <span class="atajo">N</span></button>
+  </div>
+</header>
+
+<div class="aviso" id="aviso" role="status" aria-live="polite" hidden>
+  <span class="simbolo" id="aviso-simbolo" aria-hidden="true">!</span>
+  <p id="aviso-texto"></p>
+  <button type="button" class="boton fantasma compacto" id="aviso-cerrar">Cerrar</button>
+</div>
+
+<main id="vista" tabindex="-1"></main>
+
+<aside class="ficha" id="ficha" aria-label="Ficha de la oportunidad" hidden></aside>
+
+<dialog class="dialogo" id="dialogo"></dialog>
+
+<dialog class="paleta" id="paleta" aria-label="Paleta de comandos">
+  <div class="paleta-entrada">
+    <span aria-hidden="true">&gt;</span>
+    <input id="paleta-input" type="text" autocomplete="off" spellcheck="false"
+      placeholder="Busca una oportunidad, cliente o acción…"
+      role="combobox" aria-expanded="true" aria-controls="paleta-lista" aria-autocomplete="list" aria-label="Buscar">
+  </div>
+  <div class="paleta-resultados" id="paleta-lista" role="listbox" aria-label="Resultados"></div>
+</dialog>
+
+<input type="file" id="archivo-importar" accept=".json,application/json" hidden>
+
+<script>
+(function () {
+  'use strict';
+
+  /* =======================================================
+     CONSTANTES
+     ======================================================= */
+  const CLAVE_DATOS = 'pulso.datos';
+  const CLAVE_AJUSTES = 'pulso.ajustes';
+  const ESQUEMA = 1;
+  const DIAS_INACTIVIDAD = 14;
+
+  const ETAPAS = [
+    { id: 'prospecto', nombre: 'Prospecto', prob: 10 },
+    { id: 'calificada', nombre: 'Calificada', prob: 25 },
+    { id: 'propuesta', nombre: 'Propuesta', prob: 50 },
+    { id: 'negociacion', nombre: 'Negociación', prob: 75 },
+    { id: 'ganada', nombre: 'Ganada', prob: 100 },
+    { id: 'perdida', nombre: 'Perdida', prob: 0 }
+  ];
+  const ETAPA = Object.fromEntries(ETAPAS.map((e, i) => [e.id, Object.assign({ n: i + 1 }, e)]));
+  const ABIERTAS = ['prospecto', 'calificada', 'propuesta', 'negociacion'];
+  const TIPOS = { capacitacion: 'Capacitación', proyecto: 'Proyecto' };
+  const REGIONES = ['Arica y Parinacota', 'Tarapacá', 'Antofagasta', 'Atacama', 'Coquimbo', 'Valparaíso',
+    'Metropolitana', "O'Higgins", 'Maule', 'Ñuble', 'Biobío', 'La Araucanía', 'Los Ríos', 'Los Lagos', 'Aysén', 'Magallanes'];
+  const MOTIVOS = ['Precio', 'Eligió otro proveedor', 'Sin presupuesto', 'Sin respuesta', 'Otro'];
+  const MENSAJE_ALMACENAMIENTO = 'No se pudieron guardar los datos en este navegador';
+
+  /* =======================================================
+     ALMACENAMIENTO (T-003)
+     ======================================================= */
+  let almacenamientoOk = true;
+  function leer(clave) {
+    try {
+      const t = window.localStorage.getItem(clave);
+      if (t === null) return { ok: true, valor: null };
+      return { ok: true, valor: JSON.parse(t) };
+    } catch (e) {
+      return { ok: false, valor: null };
+    }
+  }
+  function escribir(clave, valor) {
+    try {
+      window.localStorage.setItem(clave, JSON.stringify(valor));
+      return true;
+    } catch (e) {
+      if (almacenamientoOk) { almacenamientoOk = false; avisar(MENSAJE_ALMACENAMIENTO, 'riesgo', true); }
+      return false;
+    }
+  }
+  function borrar(clave) {
+    try { window.localStorage.removeItem(clave); } catch (e) { /* sin acceso */ }
+  }
+
+  /* =======================================================
+     FECHAS Y FORMATOS (T-004)
+     ======================================================= */
+  function aISO(d) {
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function hoy() { return aISO(new Date()); }
+  function sumarDias(iso, n) {
+    const [y, m, d] = iso.split('-').map(Number);
+    return aISO(new Date(y, m - 1, d + n));
+  }
+  function diasEntre(desde, hasta) {
+    const [y1, m1, d1] = desde.split('-').map(Number);
+    const [y2, m2, d2] = hasta.split('-').map(Number);
+    return Math.round((Date.UTC(y2, m2 - 1, d2) - Date.UTC(y1, m1 - 1, d1)) / 86400000);
+  }
+  function fecha(iso) {
+    if (!iso) return '—';
+    const [y, m, d] = iso.split('-');
+    return d + '-' + m + '-' + y;
+  }
+  /* 'dd-mm-aaaa' → ISO, o null si no es válida */
+  function leerFecha(texto) {
+    const m = String(texto || '').trim().match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/);
+    if (!m) return null;
+    const d = Number(m[1]), mes = Number(m[2]), y = Number(m[3]);
+    const f = new Date(y, mes - 1, d);
+    if (f.getFullYear() !== y || f.getMonth() !== mes - 1 || f.getDate() !== d) return null;
+    return aISO(f);
+  }
+  function mismoMes(iso, ref) { return !!iso && iso.slice(0, 7) === ref.slice(0, 7); }
+
+  const formatoCLP = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 });
+  const formatoCLPCorto = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', notation: 'compact', maximumFractionDigits: 1 });
+  const formatoNumero = new Intl.NumberFormat('es-CL');
+  function clp(n) { return formatoCLP.format(Math.round(n || 0)); }
+  function clpCorto(n) { return Math.abs(n) >= 1000000 ? formatoCLPCorto.format(n) : clp(n); }
+  /* Monto escrito por la persona → entero en pesos, o null si no es válido */
+  function leerMonto(texto) {
+    const t = String(texto || '').replace(/[$\s]/g, '');
+    if (!/^\d{1,3}(\.\d{3})*$|^\d+$/.test(t)) return null;
+    const n = Number(t.replace(/\./g, ''));
+    return Number.isSafeInteger(n) && n > 0 ? n : null;
+  }
+
+  /* RUT */
+  function dvRut(cuerpo) {
+    let suma = 0, mult = 2;
+    for (let i = cuerpo.length - 1; i >= 0; i--) {
+      suma += Number(cuerpo[i]) * mult;
+      mult = mult === 7 ? 2 : mult + 1;
+    }
+    const r = 11 - (suma % 11);
+    return r === 11 ? '0' : r === 10 ? 'K' : String(r);
+  }
+  function partesRut(rut) {
+    const s = String(rut || '').replace(/[.\s]/g, '').toUpperCase();
+    const m = s.match(/^(\d{7,8})-?([\dK])$/);
+    return m ? { cuerpo: m[1], dv: m[2] } : null;
+  }
+  function rutValido(rut) {
+    const p = partesRut(rut);
+    return !!p && dvRut(p.cuerpo) === p.dv;
+  }
+  function formatearRut(rut) {
+    const p = partesRut(rut);
+    if (!p) return String(rut || '');
+    return formatoNumero.format(Number(p.cuerpo)) + '-' + p.dv;
+  }
+  function crearRut(cuerpo) { return formatearRut(String(cuerpo) + dvRut(String(cuerpo))); }
+
+  /* =======================================================
+     REGLAS DE NEGOCIO (T-004)
+     ======================================================= */
+  function probabilidad(o) { return ETAPA[o.etapa] ? ETAPA[o.etapa].prob : 0; }
+  function ponderado(o) { return Math.round(o.monto * probabilidad(o) / 100); }
+  function esAbierta(o) { return ABIERTAS.includes(o.etapa); }
+  function ultimaActividad(o) {
+    let ultima = o.creada;
+    (o.actividades || []).forEach(a => { if (a.fecha > ultima) ultima = a.fecha; });
+    return ultima;
+  }
+  function diasSinActividad(o, ref) { return diasEntre(ultimaActividad(o), ref || hoy()); }
+  function enRiesgo(o, ref) {
+    const r = ref || hoy();
+    if (!esAbierta(o)) return false;
+    return diasSinActividad(o, r) > DIAS_INACTIVIDAD || (!!o.cierre && o.cierre < r);
+  }
+  function estadoDe(o) {
+    if (o.etapa === 'ganada') return 'ganada';
+    if (o.etapa === 'perdida') return 'perdida';
+    return enRiesgo(o) ? 'riesgo' : '';
+  }
+  function nuevoId() { return 'o' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+  /* =======================================================
+     DATOS DE PRUEBA (T-005) — empresas y personas inventadas
+     ======================================================= */
+  /* Equipo comercial ficticio de Norte Consultores (responsables) */
+  const EQUIPO = ['Ignacia Bravo', 'Diego Larraín', 'Camila Reyes'];
+  /* Los RUT se generan con dígito verificador válido sobre números inventados;
+     los correos usan el dominio reservado .example para no apuntar a nadie real. */
+  function datosDePrueba() {
+    const h = hoy();
+    const d = n => sumarDias(h, n);
+    // [cliente, rutCuerpo, oportunidad, tipo, monto, etapa, region, contacto, correo, telefono,
+    //  díasDesdeÚltimaActividad (null = sin actividad), cierre (días), acción (texto, días) | null, extra]
+    const filas = [
+      ['Agrícola Los Quillayes del Sur SpA', 76841203, 'Curso de inocuidad alimentaria para supervisores', 'capacitacion', 1800000, 'prospecto', 'Maule', 'Rosa Pizarro', 'rpizarro@quillayesdelsur.example', '+56 9 6123 4471', 3, 40, ['Enviar temario preliminar', 2]],
+      ['Transportes Pehuén Austral Ltda.', 77210584, 'Diagnóstico y rediseño de rutas de despacho', 'proyecto', 12500000, 'prospecto', 'La Araucanía', 'Matías Caniulef', 'mcaniulef@pehuenaustral.example', '+56 9 7342 1180', null, 60, ['Llamar para agendar reunión inicial', -2]],
+      ['Clínica Dental Mar de Coquimbo', 76539918, 'Taller de atención al paciente', 'capacitacion', 2400000, 'prospecto', 'Coquimbo', 'Daniela Fuenzalida', 'dfuenzalida@dentalmardecoquimbo.example', '+56 9 8211 0934', 1, 35, ['Confirmar cantidad de asistentes', 0]],
+      ['Constructora Valle Lircay S.A.', 76120477, 'Implementación de sistema de gestión de calidad', 'proyecto', 8900000, 'calificada', 'Maule', 'Cristián Sepúlveda', 'csepulveda@vallelircay.example', '+56 9 5590 2316', 5, 25, ['Revisar alcance con jefe de obra', 3]],
+      ['Cooperativa Lechera Río Bueno Norte', 77408325, 'Programa de liderazgo para jefaturas', 'capacitacion', 3200000, 'calificada', 'Los Ríos', 'Patricio Oyarzún', 'poyarzun@lecherarionorte.example', '+56 9 6677 8102', 16, 20, null],
+      ['Inmobiliaria Cumbres de Ñielol', 76955016, 'Curso de Excel avanzado para administración', 'capacitacion', 4750000, 'calificada', 'La Araucanía', 'Valentina Huenchullán', 'vhuenchullan@cumbresnielol.example', '+56 9 9034 5521', 2, 18, ['Enviar propuesta de fechas', 0]],
+      ['Pesquera Bahía Chonchi SpA', 77036741, 'Mapeo de procesos de planta', 'proyecto', 18000000, 'propuesta', 'Los Lagos', 'Héctor Barrientos', 'hbarrientos@bahiachonchi.example', '+56 9 7120 3398', 4, 12, ['Resolver dudas sobre la propuesta', 1]],
+      ['Colegio Altos de Peñuelas', 76680293, 'Taller de convivencia escolar para docentes', 'capacitacion', 5600000, 'propuesta', 'Valparaíso', 'Carolina Tapia', 'ctapia@altospenuelas.example', '+56 9 5843 7715', 7, -3, ['Pedir respuesta sobre la propuesta', -1]],
+      ['Frigorífico Tierra Magallánica Ltda.', 76302158, 'Plan de mejora de cadena de frío', 'proyecto', 22400000, 'propuesta', 'Magallanes', 'Sergio Vidal', 'svidal@tierramagallanica.example', '+56 9 8456 2290', 1, 9, ['Presentar propuesta al directorio', 5]],
+      ['Hotel Mirador del Elqui', 77591467, 'Curso de servicio al cliente en hotelería', 'capacitacion', 2950000, 'propuesta', 'Coquimbo', 'Javiera Rojas', 'jrojas@miradordelelqui.example', '+56 9 6290 4417', 10, 15, ['Enviar versión ajustada del presupuesto', -4]],
+      ['Minera Quebrada Tamarugal S.A.', 76074539, 'Rediseño organizacional del área de mantención', 'proyecto', 31000000, 'negociacion', 'Tarapacá', 'Andrés Mamani', 'amamani@quebradatamarugal.example', '+56 9 9921 3054', 2, 6, ['Negociar condiciones de pago', 0]],
+      ['Laboratorio Farmacéutico Andino Sur', 77863102, 'Programa de buenas prácticas de manufactura', 'capacitacion', 6300000, 'negociacion', 'Metropolitana', 'Francisca Leiva', 'fleiva@andinosur.example', '+56 9 5378 6641', 30, 4, null],
+      ['Viña Altos de Pumanque', 76418870, 'Implementación de tablero de gestión comercial', 'proyecto', 14200000, 'negociacion', "O'Higgins", 'Rodrigo Cifuentes', 'rcifuentes@altospumanque.example', '+56 9 7734 9905', 3, 10, ['Enviar contrato para revisión', 2]],
+      ['Municipalidad de Villa Esmeralda Austral', 69250417, 'Curso de atención ciudadana', 'capacitacion', 3900000, 'ganada', 'Aysén', 'Marcela Soto', 'msoto@villaesmeraldaaustral.example', '+56 9 6012 8873', 0, 0, null, { cerradaEl: 0 }],
+      ['Distribuidora Ñuble Centro SpA', 77125893, 'Reingeniería del proceso de compras', 'proyecto', 27500000, 'ganada', 'Ñuble', 'Felipe Sandoval', 'fsandoval@nublecentro.example', '+56 9 8890 1137', 6, -6, null, { cerradaEl: -6 }],
+      ['Centro de Salud Familiar Lomas de Copiapó', 65980214, 'Taller de trabajo en equipo', 'capacitacion', 2100000, 'ganada', 'Atacama', 'Lorena Araya', 'laraya@cesfamlomascopiapo.example', '+56 9 5021 4486', 20, -20, null, { cerradaEl: -20 }],
+      ['Portuaria Caleta Hornitos S.A.', 76762345, 'Estudio de productividad en patio de contenedores', 'proyecto', 16000000, 'perdida', 'Antofagasta', 'Ignacio Torres', 'itorres@caletahornitos.example', '+56 9 9645 3320', 12, -10, null, { cerradaEl: -12, motivo: 'Precio' }],
+      ['Panificadora Las Tres Lunas Ltda.', 77304186, 'Curso de manipulación de alimentos', 'capacitacion', 1950000, 'perdida', 'Biobío', 'Gabriela Muñoz', 'gmunoz@treslunas.example', '+56 9 6458 7023', 25, -15, null, { cerradaEl: -15, motivo: 'Sin respuesta' }],
+      ['Agroindustrial Parinacota Verde SpA', 76987214, 'Diseño de plan estratégico 2027–2029', 'proyecto', 9800000, 'prospecto', 'Arica y Parinacota', 'Tomás Choque', 'tchoque@parinacotaverde.example', '+56 9 7019 2264', 6, 50, ['Preparar diagnóstico preliminar', 7]],
+      ['Servicios Forestales Nahuelbuta Ltda.', 77650831, 'Sistema de indicadores de seguridad laboral', 'proyecto', 11300000, 'calificada', 'Biobío', 'Paula Henríquez', 'phenriquez@forestalnahuelbuta.example', '+56 9 8302 5579', 8, 30, ['Reunión técnica con prevencionista', 4]]
+    ];
+    return filas.map((f, i) => {
+      const [cliente, rutC, nombre, tipo, monto, etapa, region, contacto, correo, telefono, diasAct, cierreDias, accion, extra] = f;
+      const ultima = diasAct === null ? null : d(-diasAct);
+      const creada = d(-(diasAct === null ? 21 : diasAct + 9));
+      const actividades = [];
+      if (ultima) {
+        actividades.push({ id: 'a' + i + 'b', fecha: d(-(diasAct + 9)), texto: 'Primer contacto: se registra la necesidad del cliente.' });
+        actividades.push({ id: 'a' + i + 'a', fecha: ultima, texto: etapa === 'ganada' ? 'Cliente confirma la adjudicación por correo.' : etapa === 'perdida' ? 'Cliente informa que no seguirá adelante.' : 'Seguimiento con ' + contacto.split(' ')[0] + '.' });
+      }
+      const o = {
+        id: 'p' + String(i + 1).padStart(2, '0'),
+        nombre, cliente, rut: crearRut(rutC),
+        contacto: { nombre: contacto, correo, telefono },
+        responsable: EQUIPO[i % EQUIPO.length],
+        tipo, monto, etapa, region,
+        cierre: d(cierreDias),
+        accion: accion ? { texto: accion[0], fecha: d(accion[1]) } : { texto: '', fecha: null },
+        actividades, creada,
+        cerradaEl: extra ? d(extra.cerradaEl) : null,
+        motivoPerdida: extra && extra.motivo ? { motivo: extra.motivo, detalle: '' } : null
+      };
+      return o;
+    });
+  }
+
+  /* =======================================================
+     ESTADO Y PERSISTENCIA
+     ======================================================= */
+  let datos = { esquema: ESQUEMA, oportunidades: [] };
+  let ajustes = { tema: 'auto' };
+
+  function datosValidos(d) {
+    return d && typeof d === 'object' && Array.isArray(d.oportunidades) && d.oportunidades.every(oportunidadValida);
+  }
+  const esISO = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v);
+  const esISOoNulo = v => v === null || v === undefined || esISO(v);
+  function oportunidadValida(o) {
+    return !!o && typeof o === 'object' && typeof o.id === 'string' && typeof o.nombre === 'string' &&
+      typeof o.cliente === 'string' && Number.isSafeInteger(o.monto) && o.monto > 0 && !!ETAPA[o.etapa] &&
+      !!TIPOS[o.tipo] && esISO(o.creada) && esISOoNulo(o.cierre) && esISOoNulo(o.cerradaEl) &&
+      !!o.contacto && typeof o.contacto === 'object' && !!o.accion && typeof o.accion === 'object' &&
+      esISOoNulo(o.accion.fecha) && Array.isArray(o.actividades) &&
+      o.actividades.every(a => a && typeof a.id === 'string' && esISO(a.fecha) && typeof a.texto === 'string');
+  }
+  /* Completa campos opcionales que falten (respaldos antiguos o editados a mano) */
+  function normalizarOportunidad(o) {
+    o.rut = typeof o.rut === 'string' ? o.rut : '';
+    o.responsable = typeof o.responsable === 'string' ? o.responsable : '';
+    o.region = REGIONES.includes(o.region) ? o.region : 'Metropolitana';
+    ['nombre', 'correo', 'telefono'].forEach(k => { if (typeof o.contacto[k] !== 'string') o.contacto[k] = ''; });
+    if (typeof o.accion.texto !== 'string') o.accion.texto = '';
+    if (o.accion.fecha === undefined) o.accion.fecha = null;
+    if (o.cierre === undefined) o.cierre = null;
+    if (o.cerradaEl === undefined) o.cerradaEl = null;
+    if (!o.motivoPerdida || typeof o.motivoPerdida !== 'object' || typeof o.motivoPerdida.motivo !== 'string') {
+      o.motivoPerdida = o.etapa === 'perdida' && typeof o.motivoPerdida === 'string' ? { motivo: o.motivoPerdida, detalle: '' } : null;
+    }
+    if (typeof o.motivoPerdida?.detalle !== 'string' && o.motivoPerdida) o.motivoPerdida.detalle = '';
+    return o;
+  }
+  function cargar() {
+    const r = leer(CLAVE_DATOS);
+    if (r.ok && r.valor === null) {
+      datos = { esquema: ESQUEMA, oportunidades: datosDePrueba() };
+      guardar();
+    } else if (r.ok && datosValidos(r.valor) && !(r.valor.esquema > ESQUEMA)) {
+      datos = { esquema: ESQUEMA, oportunidades: r.valor.oportunidades.map(normalizarOportunidad) };
+    } else {
+      datos = { esquema: ESQUEMA, oportunidades: datosDePrueba() };
+      almacenamientoOk = false;
+      avisar(MENSAJE_ALMACENAMIENTO, 'riesgo', true);
+    }
+    const a = leer(CLAVE_AJUSTES);
+    if (a.ok && a.valor && ['auto', 'oscuro', 'claro'].includes(a.valor.tema)) ajustes = a.valor;
+  }
+  function guardar() {
+    // Si los datos guardados estaban dañados no se sobrescriben hasta que la persona edite algo.
+    const ok = escribir(CLAVE_DATOS, datos);
+    if (ok && !almacenamientoOk) { almacenamientoOk = true; ocultarAviso(); }
+    return ok;
+  }
+  function buscar(id) { return datos.oportunidades.find(o => o.id === id); }
+
+  /* Cambios con efectos de negocio */
+  function cambiarEtapa(o, etapa, motivo) {
+    const antes = o.etapa;
+    o.etapa = etapa;
+    if (etapa === 'ganada' || etapa === 'perdida') {
+      if (antes !== etapa) o.cerradaEl = hoy();
+      o.motivoPerdida = etapa === 'perdida' ? motivo : null;
+    } else {
+      o.cerradaEl = null;
+      o.motivoPerdida = null;
+    }
+  }
+
+  /* =======================================================
+     UTILIDADES DE INTERFAZ
+     ======================================================= */
+  const $ = (sel, raiz) => (raiz || document).querySelector(sel);
+  const $$ = (sel, raiz) => Array.from((raiz || document).querySelectorAll(sel));
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+  const esMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+
+  let temporizadorAviso = null;
+  function avisar(texto, tipo, persistente) {
+    const el = $('#aviso');
+    $('#aviso-texto').textContent = texto;
+    el.dataset.tipo = tipo || 'riesgo';
+    $('#aviso-simbolo').textContent = tipo === 'ok' ? '✓' : tipo === 'error' ? '✕' : '!';
+    el.hidden = false;
+    clearTimeout(temporizadorAviso);
+    if (!persistente) temporizadorAviso = setTimeout(ocultarAviso, 4000);
+  }
+  function ocultarAviso() { $('#aviso').hidden = true; }
+
+  function chipEtapa(o) {
+    const e = ETAPA[o.etapa];
+    const estado = o.etapa === 'ganada' ? 'ganada' : o.etapa === 'perdida' ? 'perdida' : '';
+    const prefijo = estado === 'ganada' ? '✓' : estado === 'perdida' ? '✕' : '<span class="n">' + String(e.n).padStart(2, '0') + '</span>';
+    return '<span class="chip"' + (estado ? ' data-estado="' + estado + '"' : '') + '>' + prefijo + ' ' + esc(e.nombre) + '</span>';
+  }
+  const chipRiesgo = '<span class="chip" data-estado="riesgo">! Riesgo</span>';
+  function chips(o) {
+    return '<span class="chips">' + chipEtapa(o) + (enRiesgo(o) ? chipRiesgo : '') + '</span>';
+  }
+  function iniciales(nombre) {
+    return String(nombre || '').split(/\s+/).filter(Boolean).slice(0, 2).map(p => p[0].toUpperCase()).join('');
+  }
+  function metrica(etiqueta, valor, principal, extraClase) {
+    return '<div class="metrica ' + (principal ? 'metrica-principal' : 'metrica-secundaria') + '">' +
+      '<span class="etiqueta">' + esc(etiqueta) + '</span>' +
+      '<span class="valor' + (extraClase ? ' ' + extraClase : '') + '">' + valor + '</span></div>';
+  }
+
+  /* =======================================================
+     CÁLCULOS DE VISTAS
+     ======================================================= */
+  function abiertas() { return datos.oportunidades.filter(esAbierta); }
+  function pipelinePonderado() { return abiertas().reduce((s, o) => s + ponderado(o), 0); }
+  function pronosticoMes() { const h = hoy(); return abiertas().filter(o => mismoMes(o.cierre, h)).reduce((s, o) => s + ponderado(o), 0); }
+  function ganadoMes() { const h = hoy(); return datos.oportunidades.filter(o => o.etapa === 'ganada' && mismoMes(o.cerradaEl, h)).reduce((s, o) => s + o.monto, 0); }
+  function cantidadRiesgo() { return datos.oportunidades.filter(o => enRiesgo(o)).length; }
+  function seguimientoHoy() {
+    const h = hoy();
+    const items = abiertas().map(o => {
+      const f = o.accion && o.accion.texto && o.accion.fecha ? o.accion.fecha : null;
+      let grupo = null;
+      if (f && f < h) grupo = 0; else if (f === h) grupo = 1; else if (enRiesgo(o)) grupo = 2;
+      return { o, f, grupo };
+    }).filter(x => x.grupo !== null);
+    items.sort((a, b) => a.grupo - b.grupo || (a.f || '').localeCompare(b.f || '') || a.o.cliente.localeCompare(b.o.cliente, 'es'));
+    return items;
+  }
+
+  /* =======================================================
+     NAVEGACIÓN (T-006)
+     ======================================================= */
+  const VISTAS = ['inicio', 'pipeline', 'tabla'];
+  function vistaActual() {
+    const v = location.hash.replace('#', '');
+    return VISTAS.includes(v) ? v : 'inicio';
+  }
+  function ir(vista) {
+    if (location.hash !== '#' + vista) location.hash = vista; else render();
+  }
+  function render() {
+    const v = vistaActual();
+    $$('.nav a').forEach(a => {
+      if (a.dataset.vista === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    if (v === 'inicio') renderInicio();
+    else if (v === 'pipeline') renderPipeline();
+    else renderTabla();
+  }
+  let botonAbajo = false, renderPendiente = false;
+  document.addEventListener('pointerdown', () => { botonAbajo = true; }, true);
+  function soltarBoton() {
+    botonAbajo = false;
+    if (renderPendiente) setTimeout(vaciarRenderPendiente, 0);
+  }
+  function vaciarRenderPendiente() { if (renderPendiente) { renderPendiente = false; render(); } }
+  document.addEventListener('pointerup', soltarBoton, true);
+  document.addEventListener('pointercancel', soltarBoton, true);
+  document.addEventListener('dragend', soltarBoton, true);
+  window.addEventListener('blur', soltarBoton);
+  function renderSeguro() { if (botonAbajo) renderPendiente = true; else render(); }
+  function refrescar() {
+    const activo = document.activeElement;
+    const idActivo = activo && activo.dataset ? activo.dataset.id : null;
+    const enVista = activo && $('#vista').contains(activo);
+    const enFicha = !!activo && $('#ficha').contains(activo);
+    const idEnFicha = enFicha ? activo.id : null;
+    render();
+    if (fichaId) renderFicha();
+    if (enFicha && fichaId) {
+      const el = (idEnFicha && document.getElementById(idEnFicha)) || $('#ficha-cerrar');
+      if (el) el.focus();
+    }
+    if (enVista && idActivo) {
+      const el = $('#vista [data-id="' + idActivo + '"]');
+      if (el) el.focus();
+    }
+  }
+
+  /* =======================================================
+     INICIO (T-018, T-019)
+     ======================================================= */
+  function renderInicio() {
+    const nRiesgo = cantidadRiesgo();
+    const seg = seguimientoHoy();
+    const h = hoy();
+    const filasEtapa = ABIERTAS.map(id => {
+      const os = datos.oportunidades.filter(o => o.etapa === id);
+      const monto = os.reduce((s, o) => s + o.monto, 0);
+      const pond = os.reduce((s, o) => s + ponderado(o), 0);
+      return '<tr data-etapa="' + id + '"><td>' + chipEtapa({ etapa: id }) + '</td><td class="num">' + os.length + '</td><td class="num">' + clp(monto) + '</td><td class="num">' + ETAPA[id].prob + ' %</td><td class="num">' + clp(pond) + '</td></tr>';
+    }).join('');
+    const listaSeg = seg.length ? '<ul class="lista">' + seg.map(x => {
+      const o = x.o;
+      let cuando;
+      if (x.grupo === 0) { const n = diasEntre(x.f, h); cuando = '<span class="etiqueta">Atrasada · ' + n + (n === 1 ? ' día' : ' días') + '</span>'; }
+      else if (x.grupo === 1) cuando = '<span class="etiqueta">Hoy</span>';
+      else cuando = '<span class="etiqueta">' + (x.f ? 'En riesgo · acción futura' : 'En riesgo · sin acción') + '</span>';
+      const causa = o.cierre && o.cierre < h ? 'Cierre vencido el ' + fecha(o.cierre) : diasSinActividad(o) + ' días sin actividad';
+      const accion = x.grupo === 2 ? (x.f ? o.accion.texto + ' · ' : 'Retomar contacto · ') + causa : o.accion.texto;
+      return '<li><div class="fila-seguimiento" role="button" tabindex="0" data-id="' + o.id + '" data-abrir>' +
+        '<div><strong>' + esc(o.cliente) + '</strong><span>' + esc(accion) + '</span></div>' +
+        '<div class="der">' + cuando + '<span class="micro">' + (x.f ? fecha(x.f) : 'Cierre ' + fecha(o.cierre)) + '</span>' + chips(o) + '</div>' +
+        '</div></li>';
+    }).join('') + '</ul>' : '<p class="vacio">No tienes seguimientos pendientes para hoy</p>';
+
+    $('#vista').innerHTML =
+      '<h1 class="oculto-visual">Inicio</h1>' +
+      '<section class="metricas" aria-label="Pronóstico">' +
+        metrica('Pipeline ponderado', clp(pipelinePonderado()), true) +
+        metrica('Pronóstico del mes', clp(pronosticoMes())) +
+        metrica('Ganado en el mes', clp(ganadoMes())) +
+        metrica('En riesgo', (nRiesgo ? '! ' : '') + nRiesgo, false, nRiesgo ? 'valor-riesgo' : '') +
+      '</section>' +
+      '<div class="dos-columnas">' +
+        '<section class="bloque" aria-labelledby="t-pronostico">' +
+          '<div class="bloque-cabecera"><h2 id="t-pronostico">¿Cuánto vamos a vender?</h2><span class="etiqueta">Abiertas por etapa</span></div>' +
+          '<table><thead><tr><th>Etapa</th><th class="num">N.º</th><th class="num">Monto</th><th class="num">Prob.</th><th class="num">Ponderado</th></tr></thead>' +
+          '<tbody>' + filasEtapa + '</tbody>' +
+          '<tfoot><tr><td>Total</td><td class="num">' + abiertas().length + '</td><td class="num">' + clp(abiertas().reduce((s, o) => s + o.monto, 0)) + '</td><td></td><td class="num">' + clp(pipelinePonderado()) + '</td></tr></tfoot></table>' +
+        '</section>' +
+        '<section class="bloque" aria-labelledby="t-seguimiento">' +
+          '<div class="bloque-cabecera"><h2 id="t-seguimiento">Seguimiento de hoy</h2><span class="etiqueta">' + seg.length + ' pendientes</span></div>' +
+          listaSeg +
+        '</section>' +
+      '</div>';
+  }
+
+  /* =======================================================
+     PIPELINE (T-008, T-013)
+     ======================================================= */
+  function renderPipeline() {
+    const abiertasOs = abiertas();
+    const columnas = ETAPAS.map(e => {
+      const os = datos.oportunidades.filter(o => o.etapa === e.id).sort((a, b) => (a.cierre || '').localeCompare(b.cierre || ''));
+      const total = os.reduce((s, o) => s + o.monto, 0);
+      return '<section class="columna" data-etapa="' + e.id + '" aria-label="' + esc(e.nombre) + '">' +
+        '<header class="columna-cabecera"><h2>' + esc(e.nombre) + '</h2>' +
+        '<span class="micro">' + os.length + (os.length === 1 ? ' oportunidad' : ' oportunidades') + ' · <span data-total>' + clp(total) + '</span></span></header>' +
+        os.map(tarjeta).join('') +
+        '</section>';
+    }).join('');
+    $('#vista').innerHTML =
+      '<h1 class="oculto-visual">Pipeline</h1>' +
+      '<section class="metricas" aria-label="Resumen">' +
+        metrica('Pipeline ponderado', clp(pipelinePonderado()), true) +
+        metrica('Monto abierto', clp(abiertasOs.reduce((s, o) => s + o.monto, 0))) +
+        metrica('Abiertas', String(abiertasOs.length)) +
+      '</section>' +
+      '<p class="micro" id="ayuda-tablero">Arrastra una tarjeta a otra columna, o enfócala y usa Alt + ← / → para cambiarla de etapa.</p>' +
+      '<div class="tablero">' + columnas + '</div>';
+  }
+  function tarjeta(o) {
+    const estado = estadoDe(o);
+    return '<article class="tarjeta" tabindex="0" draggable="true" data-id="' + o.id + '" data-abrir' +
+      (estado ? ' data-estado="' + estado + '"' : '') + ' aria-describedby="ayuda-tablero" ' +
+      'aria-label="' + esc(o.cliente + ', ' + o.nombre + ', ' + clp(o.monto) + ', ' + ETAPA[o.etapa].nombre + (estado === 'riesgo' ? ', en riesgo' : '')) + '">' +
+      '<div class="tarjeta-cabeza"><div class="tarjeta-cliente" title="' + esc(o.cliente) + '">' + esc(o.cliente) + '</div>' +
+      (estado === 'riesgo' ? chipRiesgo : '') + '</div>' +
+      '<div class="tarjeta-nombre">' + esc(o.nombre) + '</div>' +
+      '<div class="tarjeta-monto"><strong title="' + clp(o.monto) + '">' + clpCorto(o.monto) + '</strong><span class="micro">' + probabilidad(o) + ' %</span></div>' +
+      (estado === 'ganada' || estado === 'perdida' ? '<div>' + chipEtapa(o) + '</div>' : '') +
+      '<div class="tarjeta-pie"><span class="etiqueta">' + esc(TIPOS[o.tipo]) + '</span>' +
+      '<span class="micro" title="' + esc('Responsable: ' + (o.responsable || 'sin asignar')) + '">' + esc(iniciales(o.responsable) || '—') + ' · ' + fecha(fechaCierreTabla(o)) + '</span></div>' +
+      '</article>';
+  }
+
+  /* Mover de etapa: valida pérdida con motivo */
+  function moverA(id, etapa, alTerminar) {
+    const o = buscar(id);
+    if (!o || o.etapa === etapa) { if (alTerminar) alTerminar(false); return; }
+    if (etapa === 'perdida') {
+      pedirMotivo(o, motivo => {
+        if (!motivo) { refrescar(); if (alTerminar) alTerminar(false); return; }
+        cambiarEtapa(o, 'perdida', motivo); guardar(); refrescar();
+        if (alTerminar) alTerminar(true);
+      });
+      return;
+    }
+    cambiarEtapa(o, etapa, null);
+    guardar(); refrescar();
+    if (alTerminar) alTerminar(true);
+  }
+
+  /* =======================================================
+     TABLA (T-016, T-017)
+     ======================================================= */
+  const filtros = { texto: '', tipo: '', etapa: '', riesgo: false, orden: 'cierre', dir: 1 };
+  const COLUMNAS = [
+    { id: 'cliente', nombre: 'Cliente', valor: o => o.cliente },
+    { id: 'nombre', nombre: 'Oportunidad', valor: o => o.nombre },
+    { id: 'tipo', nombre: 'Tipo', valor: o => TIPOS[o.tipo] },
+    { id: 'etapa', nombre: 'Etapa', valor: o => ETAPA[o.etapa].n },
+    { id: 'monto', nombre: 'Monto', valor: o => o.monto, num: true },
+    { id: 'prob', nombre: 'Prob.', valor: o => probabilidad(o), num: true },
+    { id: 'ponderado', nombre: 'Ponderado', valor: o => ponderado(o), num: true },
+    { id: 'cierre', nombre: 'Cierre', valor: fechaCierreTabla, num: true },
+    { id: 'ultima', nombre: 'Últ. actividad', valor: o => ultimaActividad(o), num: true }
+  ];
+  /* Abiertas: cierre estimado. Cerradas: fecha real de cierre (cuadra con GANADO EN EL MES). */
+  function fechaCierreTabla(o) { return (esAbierta(o) ? o.cierre : (o.cerradaEl || o.cierre)) || ''; }
+  function filasVisibles() {
+    const t = normalizar(filtros.texto.trim());
+    const col = COLUMNAS.find(c => c.id === filtros.orden);
+    return datos.oportunidades.filter(o =>
+      (!t || normalizar(o.cliente).includes(t) || normalizar(o.nombre).includes(t)) &&
+      (!filtros.tipo || o.tipo === filtros.tipo) &&
+      (!filtros.etapa || o.etapa === filtros.etapa) &&
+      (!filtros.riesgo || enRiesgo(o))
+    ).sort((a, b) => {
+      const va = col.valor(a), vb = col.valor(b);
+      const c = typeof va === 'number' ? va - vb : String(va).localeCompare(String(vb), 'es');
+      return c * filtros.dir;
+    });
+  }
+  function renderTabla() {
+    const filas = filasVisibles();
+    const totalMonto = filas.reduce((s, o) => s + o.monto, 0);
+    const totalPond = filas.reduce((s, o) => s + ponderado(o), 0);
+    const cab = COLUMNAS.map(c => {
+      const activo = filtros.orden === c.id;
+      const sort = activo ? (filtros.dir === 1 ? 'ascending' : 'descending') : 'none';
+      return '<th class="' + (c.num ? 'num' : '') + '" aria-sort="' + sort + '"><button type="button" data-orden="' + c.id + '">' + esc(c.nombre) +
+        '<span aria-hidden="true">' + (activo ? (filtros.dir === 1 ? '↑' : '↓') : '') + '</span></button></th>';
+    }).join('');
+    const cuerpo = filas.map(o =>
+      '<tr tabindex="0" data-id="' + o.id + '" data-abrir' + (fichaId === o.id ? ' aria-selected="true"' : '') + '>' +
+      '<td class="celda-cliente celda-texto">' + esc(o.cliente) + '</td>' +
+      '<td class="celda-texto">' + esc(o.nombre) + '</td>' +
+      '<td>' + esc(TIPOS[o.tipo]) + '</td>' +
+      '<td>' + chips(o) + '</td>' +
+      '<td class="num">' + clp(o.monto) + '</td>' +
+      '<td class="num">' + probabilidad(o) + ' %</td>' +
+      '<td class="num">' + clp(ponderado(o)) + '</td>' +
+      '<td class="num"' + (esAbierta(o) ? '' : ' title="Fecha real de cierre"') + '>' + fecha(fechaCierreTabla(o)) + '</td>' +
+      '<td class="num">' + fecha(ultimaActividad(o)) + '</td></tr>'
+    ).join('');
+    const opcionesEtapa = ETAPAS.map(e => '<option value="' + e.id + '"' + (filtros.etapa === e.id ? ' selected' : '') + '>' + esc(e.nombre) + '</option>').join('');
+    const herramientasYaExisten = $('#tabla-buscar');
+    const contenido =
+      '<section class="metricas" aria-label="Resumen de la tabla">' +
+        metrica('Monto en la tabla', clp(totalMonto), true) +
+        metrica('Ponderado', clp(totalPond)) +
+        metrica('Filas', filas.length + ' de ' + datos.oportunidades.length) +
+      '</section>';
+    const tablaHtml = filas.length ?
+      '<div class="tabla-contenedor"><table><caption class="oculto-visual">Oportunidades</caption><thead><tr>' + cab + '</tr></thead><tbody>' + cuerpo + '</tbody>' +
+      '<tfoot><tr><td colspan="4">Total · ' + filas.length + (filas.length === 1 ? ' oportunidad' : ' oportunidades') + '</td><td class="num">' + clp(totalMonto) + '</td><td></td><td class="num">' + clp(totalPond) + '</td><td></td><td></td></tr></tfoot></table></div>' :
+      '<div class="bloque vacio"><p>No hay oportunidades con estos filtros.</p><p><button type="button" class="boton" data-accion="nueva">+ Nueva oportunidad</button></p></div>';
+
+    if (herramientasYaExisten) {
+      // Conserva los controles (y el foco del buscador) al filtrar.
+      const cont = $('.tabla-contenedor');
+      const scroll = cont ? cont.scrollTop : 0;
+      $('#tabla-metricas').innerHTML = contenido;
+      $('#tabla-cuerpo').innerHTML = tablaHtml;
+      const nuevo = $('.tabla-contenedor'); if (nuevo) nuevo.scrollTop = scroll;
+      return;
+    }
+    $('#vista').innerHTML =
+      '<h1 class="oculto-visual">Tabla</h1>' +
+      '<div id="tabla-metricas">' + contenido + '</div>' +
+      '<div class="tabla-herramientas" role="search">' +
+        '<label class="oculto-visual" for="tabla-buscar">Buscar por cliente u oportunidad</label>' +
+        '<input id="tabla-buscar" class="campo-control" type="search" placeholder="Buscar cliente u oportunidad…" value="' + esc(filtros.texto) + '">' +
+        '<label class="oculto-visual" for="tabla-tipo">Tipo</label>' +
+        '<select id="tabla-tipo" class="campo-control"><option value="">Todos los tipos</option>' +
+          Object.entries(TIPOS).map(([k, v]) => '<option value="' + k + '"' + (filtros.tipo === k ? ' selected' : '') + '>' + v + '</option>').join('') + '</select>' +
+        '<label class="oculto-visual" for="tabla-etapa">Etapa</label>' +
+        '<select id="tabla-etapa" class="campo-control"><option value="">Todas las etapas</option>' + opcionesEtapa + '</select>' +
+        '<label class="casilla"><input id="tabla-riesgo" type="checkbox"' + (filtros.riesgo ? ' checked' : '') + '> <span class="etiqueta">Solo en riesgo</span></label>' +
+      '</div>' +
+      '<div id="tabla-cuerpo">' + tablaHtml + '</div>';
+  }
+
+  /* =======================================================
+     FICHA (T-009, T-010, T-011, T-014, T-015)
+     ======================================================= */
+  let fichaId = null;
+  let focoAntesFicha = null;
+  let temporizadorGuardado = null;
+
+  function abrirFicha(id) {
+    if (!buscar(id)) return;
+    if (!fichaId) focoAntesFicha = document.activeElement;
+    fichaId = id;
+    renderFicha();
+    const f = $('#ficha');
+    if (f.hidden) {
+      f.hidden = false;
+      void f.offsetWidth; // fuerza el estado inicial para que la transición corra
+    }
+    f.classList.add('abierta');
+    $('#ficha-cerrar').focus();
+    if (vistaActual() === 'tabla') renderTabla();
+  }
+  function cerrarFicha() {
+    if (!fichaId) return;
+    const enEdicion = document.activeElement;
+    if (enEdicion && $('#ficha').contains(enEdicion) && enEdicion.dataset && enEdicion.dataset.campo && enEdicion.tagName !== 'SELECT') {
+      // Si el valor no es válido, la ficha no se cierra: queda el error a la vista.
+      guardarCampo(enEdicion);
+      if (enEdicion.getAttribute('aria-invalid') === 'true') { enEdicion.focus(); return; }
+    }
+    vaciarRenderPendiente();
+    const id = fichaId;
+    fichaId = null;
+    const f = $('#ficha');
+    f.classList.remove('abierta');
+    const ocultar = () => { if (!fichaId) { f.hidden = true; f.innerHTML = ''; } };
+    const dur = parseFloat(getComputedStyle(f).transitionDuration) || 0;
+    if (dur > 0) setTimeout(ocultar, dur * 1000); else ocultar();
+    if (vistaActual() === 'tabla') renderTabla();
+    let destino = focoAntesFicha && document.contains(focoAntesFicha) ? focoAntesFicha : $('#vista [data-id="' + id + '"]');
+    if (destino) destino.focus();
+    focoAntesFicha = null;
+  }
+
+  function campoTexto(nombre, valor, etiqueta, opciones) {
+    opciones = opciones || {};
+    const idc = 'f-' + nombre.replace(/\./g, '-');
+    return '<div class="dato' + (opciones.ancho ? ' ancho' : '') + '">' +
+      '<label class="etiqueta" for="' + idc + '">' + esc(etiqueta) + '</label>' +
+      '<input class="campo" id="' + idc + '" data-campo="' + nombre + '" type="' + (opciones.tipo || 'text') + '" value="' + esc(valor) + '"' +
+      (opciones.placeholder ? ' placeholder="' + esc(opciones.placeholder) + '"' : '') +
+      (opciones.inputmode ? ' inputmode="' + opciones.inputmode + '"' : '') + ' aria-describedby="' + idc + '-error">' +
+      '<span class="error" id="' + idc + '-error" aria-live="polite"></span></div>';
+  }
+  function campoSelect(nombre, valor, etiqueta, opciones, ancho) {
+    const idc = 'f-' + nombre;
+    return '<div class="dato' + (ancho ? ' ancho' : '') + '"><label class="etiqueta" for="' + idc + '">' + esc(etiqueta) + '</label>' +
+      '<select class="campo" id="' + idc + '" data-campo="' + nombre + '">' +
+      opciones.map(([v, t]) => '<option value="' + esc(v) + '"' + (v === valor ? ' selected' : '') + '>' + esc(t) + '</option>').join('') +
+      '</select></div>';
+  }
+
+  function renderFicha() {
+    const o = buscar(fichaId);
+    const f = $('#ficha');
+    if (!o) { cerrarFicha(); return; }
+    const cerrada = !esAbierta(o);
+    const acts = (o.actividades || []).slice().sort((a, b) => b.fecha.localeCompare(a.fecha) || b.id.localeCompare(a.id));
+    const scroll = $('.ficha-cuerpo', f) ? $('.ficha-cuerpo', f).scrollTop : 0;
+    f.innerHTML =
+      '<div class="ficha-cuerpo">' +
+        '<header class="ficha-cabecera">' +
+          '<div class="ficha-titulo-bloque">' +
+            '<label class="oculto-visual" for="f-nombre">Nombre de la oportunidad</label>' +
+            '<input class="campo campo-titulo" id="f-nombre" data-campo="nombre" value="' + esc(o.nombre) + '" title="' + esc(o.nombre) + '" aria-describedby="f-nombre-error">' +
+            '<span class="error" id="f-nombre-error" aria-live="polite"></span>' +
+            '<p class="tenue" id="ficha-sub">' + htmlSub(o) + '</p>' +
+            '<p class="micro guardado" id="ficha-guardado" aria-live="polite"></p>' +
+          '</div>' +
+          '<button type="button" class="boton fantasma compacto" id="ficha-cerrar">✕ Cerrar <span class="atajo">Esc</span></button>' +
+        '</header>' +
+        '<section class="ficha-cifra" id="ficha-resumen" aria-label="Monto">' + htmlResumen(o) + '</section>' +
+        '<section aria-labelledby="t-datos"><h2 class="seccion-titulo" id="t-datos">Datos</h2><div class="datos">' +
+          campoTexto('cliente', o.cliente, 'Cliente', { ancho: true }) +
+          campoTexto('rut', o.rut, 'RUT', { placeholder: '12.345.678-5' }) +
+          campoTexto('monto', formatoNumero.format(o.monto), 'Monto (CLP)', { inputmode: 'numeric' }) +
+          campoSelect('tipo', o.tipo, 'Tipo', Object.entries(TIPOS)) +
+          campoSelect('etapa', o.etapa, 'Etapa', ETAPAS.map(e => [e.id, e.nombre])) +
+          campoSelect('region', o.region, 'Región', REGIONES.map(r => [r, r])) +
+          campoTexto('responsable', o.responsable, 'Responsable') +
+          campoTexto('cierre', fecha(o.cierre), 'Cierre estimado', { placeholder: 'dd-mm-aaaa' }) +
+          campoTexto('contacto.nombre', o.contacto.nombre, 'Contacto') +
+          campoTexto('contacto.telefono', o.contacto.telefono, 'Teléfono', { tipo: 'tel' }) +
+          campoTexto('contacto.correo', o.contacto.correo, 'Correo', { tipo: 'email', ancho: true }) +
+          campoTexto('accion.texto', o.accion.texto, 'Próxima acción', { ancho: true }) +
+          campoTexto('accion.fecha', fecha(o.accion.fecha), 'Fecha de la acción', { placeholder: 'dd-mm-aaaa' }) +
+          '<div class="dato"><span class="etiqueta">Última actividad</span><span>' + fecha(ultimaActividad(o)) + '</span></div>' +
+          '<div class="dato"><span class="etiqueta">Creada</span><span>' + fecha(o.creada) + '</span></div>' +
+          (cerrada ? '<div class="dato"><span class="etiqueta">Cerrada el</span><span>' + fecha(o.cerradaEl) + '</span></div>' : '') +
+        '</div></section>' +
+        '<section aria-labelledby="t-actividad"><h2 class="seccion-titulo" id="t-actividad">Actividad</h2>' +
+          (acts.length ? '<ul class="actividades">' + acts.map(a => '<li><span class="micro">' + fecha(a.fecha) + '</span><span>' + esc(a.texto) + '</span></li>').join('') + '</ul>' :
+            '<p class="tenue">Aún no hay actividades registradas.</p>') +
+        '</section>' +
+      '</div>' +
+      '<footer class="ficha-acciones">' +
+        '<form class="form-actividad" id="form-actividad">' +
+          '<label class="oculto-visual" for="act-fecha">Fecha de la actividad</label>' +
+          '<input class="campo" id="act-fecha" value="' + fecha(hoy()) + '" placeholder="dd-mm-aaaa" aria-describedby="act-error">' +
+          '<label class="oculto-visual" for="act-texto">Qué pasó</label>' +
+          '<input class="campo" id="act-texto" placeholder="Qué pasó (llamada, reunión, correo…)" aria-describedby="act-error">' +
+          '<span class="error" id="act-error" aria-live="polite"></span>' +
+          '<button type="submit" class="boton primario">+ Registrar actividad</button>' +
+        '</form>' +
+        '<div class="fila-botones">' +
+          (o.etapa !== 'ganada' ? '<button type="button" class="boton compacto" data-accion="ganar">✓ Marcar ganada</button>' : '') +
+          (o.etapa !== 'perdida' ? '<button type="button" class="boton compacto" data-accion="perder">✕ Marcar perdida</button>' : '') +
+          (cerrada ? '<button type="button" class="boton compacto" data-accion="reabrir">Reabrir</button>' : '') +
+          '<button type="button" class="boton peligro compacto empuje" data-accion="eliminar">Eliminar</button>' +
+        '</div>' +
+      '</footer>';
+    const cuerpo = $('.ficha-cuerpo', f);
+    if (cuerpo) cuerpo.scrollTop = scroll;
+  }
+
+  function htmlSub(o) { return esc(o.cliente) + ' · RUT ' + esc(o.rut || '—'); }
+  function htmlResumen(o) {
+    const motivo = o.motivoPerdida ? o.motivoPerdida.motivo + (o.motivoPerdida.detalle ? ': ' + o.motivoPerdida.detalle : '') : '';
+    return '<span class="etiqueta">Monto</span>' +
+      '<div class="ficha-cifra-fila"><span class="valor">' + clp(o.monto) + '</span>' + chips(o) + '</div>' +
+      '<span class="micro">Probabilidad ' + probabilidad(o) + ' % · Ponderado ' + clp(ponderado(o)) + '</span>' +
+      (estadoDe(o) === 'riesgo' ? '<p class="micro">' + (o.cierre && o.cierre < hoy() ? 'La fecha de cierre ya pasó. ' : '') + (diasSinActividad(o) > DIAS_INACTIVIDAD ? diasSinActividad(o) + ' días sin actividad.' : '') + '</p>' : '') +
+      (motivo ? '<p class="micro">Motivo de pérdida: ' + esc(motivo) + '</p>' : '');
+  }
+  /* Actualiza solo las partes calculadas, sin reemplazar los campos (no se pierde el foco) */
+  function actualizarResumenFicha() {
+    const o = buscar(fichaId);
+    if (!o) return;
+    const r = $('#ficha-resumen'); if (r) r.innerHTML = htmlResumen(o);
+    const s = $('#ficha-sub'); if (s) s.innerHTML = htmlSub(o);
+  }
+  function mostrarGuardado() {
+    const el = $('#ficha-guardado');
+    if (!el) return;
+    el.textContent = '✓ Guardado';
+    clearTimeout(temporizadorGuardado);
+    temporizadorGuardado = setTimeout(() => { const e = $('#ficha-guardado'); if (e) e.textContent = ''; }, 2000);
+  }
+  function errorCampo(input, mensaje) {
+    const err = document.getElementById(input.getAttribute('aria-describedby'));
+    if (mensaje) { input.setAttribute('aria-invalid', 'true'); if (err) err.textContent = '✕ ' + mensaje; }
+    else { input.removeAttribute('aria-invalid'); if (err) err.textContent = ''; }
+  }
+
+  /* Guarda un campo de la ficha; devuelve true si se guardó */
+  function guardarCampo(input) {
+    const o = buscar(fichaId);
+    if (!o) return false;
+    const campo = input.dataset.campo;
+    const v = input.value;
+    let error = null;
+    switch (campo) {
+      case 'nombre': case 'cliente':
+        if (!v.trim()) error = 'Este campo es obligatorio.'; else o[campo] = v.trim();
+        break;
+      case 'rut':
+        if (v.trim() === '') o.rut = '';
+        else if (!rutValido(v)) error = 'RUT no válido: revisa el dígito verificador.';
+        else { o.rut = formatearRut(v); input.value = o.rut; }
+        break;
+      case 'monto': {
+        const n = leerMonto(v);
+        if (n === null) error = 'Escribe un monto entero y positivo, en pesos.'; else o.monto = n;
+        break;
+      }
+      case 'tipo': o.tipo = v; break;
+      case 'responsable': o.responsable = v.trim(); break;
+      case 'region': o.region = v; break;
+      case 'etapa':
+        moverA(o.id, v, ok => { if (ok) mostrarGuardado(); else { const s = $('#f-etapa'); if (s) s.value = o.etapa; } });
+        return true;
+      case 'cierre': {
+        const iso = leerFecha(v);
+        if (!iso) error = 'Usa el formato dd-mm-aaaa.'; else o.cierre = iso;
+        break;
+      }
+      case 'accion.fecha': {
+        if (v.trim() === '' || v.trim() === '—') { o.accion.fecha = null; break; }
+        const iso = leerFecha(v);
+        if (!iso) error = 'Usa el formato dd-mm-aaaa.'; else o.accion.fecha = iso;
+        break;
+      }
+      case 'accion.texto': o.accion.texto = v.trim(); break;
+      case 'contacto.nombre': o.contacto.nombre = v.trim(); break;
+      case 'contacto.correo':
+        if (v.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())) error = 'Correo no válido.'; else o.contacto.correo = v.trim();
+        break;
+      case 'contacto.telefono': o.contacto.telefono = v.trim(); break;
+      default: return false;
+    }
+    errorCampo(input, error);
+    if (error) return false;
+    if (campo === 'monto') input.value = formatoNumero.format(o.monto);
+    const ok = guardar();
+    renderSeguro();
+    actualizarResumenFicha();
+    if (ok) mostrarGuardado();
+    return ok;
+  }
+
+  function registrarActividad() {
+    const o = buscar(fichaId);
+    const fIn = $('#act-fecha'), tIn = $('#act-texto');
+    const iso = leerFecha(fIn.value);
+    const err = $('#act-error');
+    if (!iso) { err.textContent = '✕ La fecha debe tener el formato dd-mm-aaaa.'; fIn.setAttribute('aria-invalid', 'true'); fIn.focus(); return; }
+    if (iso > hoy()) { err.textContent = '✕ La actividad no puede tener fecha futura.'; fIn.setAttribute('aria-invalid', 'true'); fIn.focus(); return; }
+    if (!tIn.value.trim()) { err.textContent = '✕ Describe qué pasó.'; tIn.setAttribute('aria-invalid', 'true'); tIn.focus(); return; }
+    o.actividades.push({ id: 'a' + Date.now().toString(36), fecha: iso, texto: tIn.value.trim() });
+    const ok = guardar();
+    refrescar();
+    if (ok) mostrarGuardado();
+    const t = $('#act-texto'); if (t) t.focus();
+  }
+
+  /* =======================================================
+     DIÁLOGOS
+     ======================================================= */
+  let alCerrarDialogo = null;
+  let focoAntesDialogo = null;
+  function abrirDialogo(html, alCerrar, alAbrir) {
+    const d = $('#dialogo');
+    focoAntesDialogo = document.activeElement;
+    d.innerHTML = html;
+    alCerrarDialogo = alCerrar || null;
+    d.returnValue = '';
+    d.showModal();
+    if (alAbrir) alAbrir(d);
+  }
+  $('#dialogo').addEventListener('close', () => {
+    const d = $('#dialogo');
+    // Si ya se abrió otro diálogo, este 'close' es del anterior: no toca el callback del nuevo.
+    if (d.open) return;
+    const cb = alCerrarDialogo;
+    alCerrarDialogo = null;
+    const valor = d.returnValue;
+    if (cb) cb(valor, d);
+    if (d.open) return;
+    if (focoAntesDialogo && document.contains(focoAntesDialogo)) focoAntesDialogo.focus();
+    else if (fichaId && document.activeElement === document.body && $('#ficha-cerrar')) $('#ficha-cerrar').focus();
+  });
+  function confirmar(titulo, texto, textoBoton, peligro, cb) {
+    abrirDialogo(
+      '<form method="dialog"><div class="dialogo-cuerpo"><h2>' + esc(titulo) + '</h2><p>' + texto + '</p></div>' +
+      '<div class="dialogo-pie"><button class="boton" value="cancelar">Cancelar</button>' +
+      '<button class="boton ' + (peligro ? 'peligro' : 'primario') + '" value="ok" id="dlg-ok">' + esc(textoBoton) + '</button></div></form>',
+      v => cb(v === 'ok'));
+  }
+
+  function pedirMotivo(o, cb) {
+    let resultado = null;
+    abrirDialogo(
+      '<form method="dialog" id="form-motivo" novalidate><div class="dialogo-cuerpo"><h2>Marcar como perdida</h2>' +
+      '<p>' + esc(o.cliente) + ' — ' + esc(o.nombre) + '</p>' +
+      '<fieldset><legend class="etiqueta">Motivo de la pérdida</legend>' +
+      MOTIVOS.map((m, i) => '<label class="casilla"><input type="radio" name="motivo" value="' + esc(m) + '"' + (i === 0 ? ' required' : '') + '> ' + esc(m) + '</label>').join('') +
+      '<label class="oculto-visual" for="motivo-detalle">Detalle del motivo</label>' +
+      '<input class="campo" id="motivo-detalle" placeholder="Detalle (obligatorio si eliges Otro)" aria-describedby="motivo-error">' +
+      '</fieldset><span class="error" id="motivo-error" aria-live="polite"></span></div>' +
+      '<div class="dialogo-pie"><button type="button" class="boton" id="motivo-cancelar">Cancelar</button>' +
+      '<button type="submit" class="boton primario" id="motivo-ok">✕ Marcar perdida</button></div></form>',
+      () => cb(resultado),
+      d => {
+        $('#motivo-cancelar', d).addEventListener('click', () => d.close('cancelar'));
+        $('#form-motivo', d).addEventListener('submit', ev => {
+          const sel = $('input[name="motivo"]:checked', d);
+          const detalle = $('#motivo-detalle', d).value.trim();
+          if (!sel) { ev.preventDefault(); $('#motivo-error', d).textContent = '✕ Elige un motivo.'; return; }
+          if (sel.value === 'Otro' && !detalle) { ev.preventDefault(); $('#motivo-error', d).textContent = '✕ Escribe el detalle del motivo.'; $('#motivo-detalle', d).focus(); return; }
+          resultado = { motivo: sel.value, detalle };
+        });
+        const primero = $('input[name="motivo"]', d); if (primero) primero.focus();
+      });
+  }
+
+  /* Nueva oportunidad (T-012) */
+  function nuevaOportunidad(clienteInicial) {
+    abrirDialogo(
+      '<form method="dialog" id="form-nueva" novalidate><div class="dialogo-cuerpo"><h2>Nueva oportunidad</h2>' +
+      '<div class="form-grilla">' +
+        '<div class="dato ancho"><label class="etiqueta" for="n-cliente">Cliente *</label><input class="campo" id="n-cliente" required value="' + esc(clienteInicial || '') + '"></div>' +
+        '<div class="dato ancho"><label class="etiqueta" for="n-nombre">Oportunidad *</label><input class="campo" id="n-nombre" required placeholder="Ej.: Curso de liderazgo para jefaturas"></div>' +
+        '<div class="dato"><label class="etiqueta" for="n-tipo">Tipo *</label><select class="campo" id="n-tipo"><option value="capacitacion">Capacitación</option><option value="proyecto">Proyecto</option></select></div>' +
+        '<div class="dato"><label class="etiqueta" for="n-monto">Monto (CLP) *</label><input class="campo" id="n-monto" inputmode="numeric" placeholder="1.250.000" required></div>' +
+        '<div class="dato"><label class="etiqueta" for="n-cierre">Cierre estimado *</label><input class="campo" id="n-cierre" placeholder="dd-mm-aaaa" value="' + fecha(sumarDias(hoy(), 30)) + '" required></div>' +
+        '<div class="dato"><label class="etiqueta" for="n-region">Región</label><select class="campo" id="n-region">' + REGIONES.map(r => '<option' + (r === 'Metropolitana' ? ' selected' : '') + '>' + esc(r) + '</option>').join('') + '</select></div>' +
+        '<div class="dato"><label class="etiqueta" for="n-rut">RUT</label><input class="campo" id="n-rut" placeholder="12.345.678-5"></div>' +
+        '<div class="dato"><label class="etiqueta" for="n-contacto">Contacto</label><input class="campo" id="n-contacto"></div>' +
+        '<div class="dato"><label class="etiqueta" for="n-responsable">Responsable</label><input class="campo" id="n-responsable" list="lista-equipo"></div>' +
+        '<datalist id="lista-equipo">' + EQUIPO.map(n => '<option value="' + esc(n) + '">').join('') + '</datalist>' +
+      '</div><p class="error" id="n-error" aria-live="polite"></p></div>' +
+      '<div class="dialogo-pie"><button type="button" class="boton" id="n-cancelar">Cancelar</button>' +
+      '<button type="submit" class="boton primario">Crear oportunidad</button></div></form>',
+      null,
+      d => {
+        $('#n-cancelar', d).addEventListener('click', () => d.close('cancelar'));
+        $('#form-nueva', d).addEventListener('submit', ev => {
+          ev.preventDefault();
+          const errores = [];
+          const val = id => $(id, d).value.trim();
+          const marcar = (id, malo) => { if (malo) $(id, d).setAttribute('aria-invalid', 'true'); else $(id, d).removeAttribute('aria-invalid'); return malo; };
+          if (marcar('#n-cliente', !val('#n-cliente'))) errores.push('el cliente');
+          if (marcar('#n-nombre', !val('#n-nombre'))) errores.push('el nombre');
+          const monto = leerMonto(val('#n-monto'));
+          if (marcar('#n-monto', monto === null)) errores.push('un monto entero y positivo');
+          const cierre = leerFecha(val('#n-cierre'));
+          if (marcar('#n-cierre', !cierre)) errores.push('la fecha de cierre (dd-mm-aaaa)');
+          const rut = val('#n-rut');
+          if (marcar('#n-rut', !!rut && !rutValido(rut))) errores.push('un RUT válido');
+          if (errores.length) {
+            $('#n-error', d).textContent = '✕ Falta ' + errores.join(', ') + '.';
+            const primero = $('[aria-invalid="true"]', d); if (primero) primero.focus();
+            return;
+          }
+          const o = {
+            id: nuevoId(), nombre: val('#n-nombre'), cliente: val('#n-cliente'), rut: rut ? formatearRut(rut) : '',
+            contacto: { nombre: val('#n-contacto'), correo: '', telefono: '' }, responsable: val('#n-responsable'),
+            tipo: $('#n-tipo', d).value, monto, etapa: 'prospecto', region: $('#n-region', d).value,
+            cierre, accion: { texto: '', fecha: null }, actividades: [], creada: hoy(), cerradaEl: null, motivoPerdida: null
+          };
+          datos.oportunidades.push(o);
+          guardar();
+          focoAntesDialogo = null;
+          d.close('ok');
+          refrescar();
+          avisar('Oportunidad creada en Prospecto: ' + o.cliente, 'ok');
+          abrirFicha(o.id);
+        });
+        $(clienteInicial ? '#n-nombre' : '#n-cliente', d).focus();
+      });
+  }
+
+  /* Eliminar (T-015) */
+  function eliminar(o) {
+    confirmar('Eliminar oportunidad', '¿Eliminar definitivamente <strong>' + esc(o.nombre) + '</strong> de ' + esc(o.cliente) + '? Esta acción no se puede deshacer.',
+      'Eliminar definitivamente', true, ok => {
+        if (!ok) return;
+        datos.oportunidades = datos.oportunidades.filter(x => x.id !== o.id);
+        guardar();
+        focoAntesFicha = null;
+        focoAntesDialogo = null;
+        cerrarFicha();
+        refrescar();
+        avisar('Oportunidad eliminada.', 'ok');
+        const tab = $('.nav a[aria-current="page"]'); if (tab) tab.focus();
+      });
+  }
+
+  /* =======================================================
+     RESPALDO (T-022, T-023)
+     ======================================================= */
+  function exportar() {
+    const contenido = { app: 'pulso', esquema: ESQUEMA, exportado: hoy(), oportunidades: datos.oportunidades };
+    const blob = new Blob([JSON.stringify(contenido, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'pulso-respaldo-' + fecha(hoy()) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    avisar('Respaldo descargado: ' + a.download, 'ok');
+  }
+  function importar() { const i = $('#archivo-importar'); i.value = ''; i.click(); }
+  function procesarImportacion(texto) {
+    let r = null;
+    try { r = JSON.parse(texto); } catch (e) { r = null; }
+    if (r && r.app === 'pulso' && typeof r.esquema === 'number' && r.esquema > ESQUEMA) {
+      avisar('El respaldo es de una versión más nueva de Pulso. No se cambió nada.', 'error');
+      return;
+    }
+    if (!r || r.app !== 'pulso' || typeof r.esquema !== 'number' || !datosValidos(r)) {
+      avisar('El archivo no es un respaldo válido de Pulso. No se cambió nada.', 'error');
+      return;
+    }
+    const n = r.oportunidades.length;
+    confirmar('Importar respaldo',
+      'El archivo trae <strong>' + n + '</strong> ' + (n === 1 ? 'oportunidad' : 'oportunidades') + '. Reemplazará las <strong>' + datos.oportunidades.length + '</strong> que tienes ahora.',
+      'Reemplazar datos', true, ok => {
+        if (!ok) return;
+        datos = { esquema: ESQUEMA, oportunidades: r.oportunidades.map(normalizarOportunidad) };
+        guardar();
+        if (fichaId) { focoAntesFicha = null; cerrarFicha(); }
+        refrescar();
+        avisar('Respaldo importado: ' + n + ' oportunidades.', 'ok');
+      });
+  }
+  $('#archivo-importar').addEventListener('change', ev => {
+    const archivo = ev.target.files && ev.target.files[0];
+    if (!archivo) return;
+    const lector = new FileReader();
+    lector.onload = () => procesarImportacion(String(lector.result));
+    lector.onerror = () => avisar('No se pudo leer el archivo.', 'error');
+    lector.readAsText(archivo);
+  });
+
+  /* =======================================================
+     AJUSTES (T-024)
+     ======================================================= */
+  function aplicarTema() {
+    const r = document.documentElement;
+    if (ajustes.tema === 'auto') delete r.dataset.tema; else r.dataset.tema = ajustes.tema;
+  }
+  function cambiarTema(tema) {
+    ajustes.tema = tema;
+    escribir(CLAVE_AJUSTES, ajustes);
+    aplicarTema();
+  }
+  function abrirAjustes() {
+    abrirDialogo(
+      '<form method="dialog"><div class="dialogo-cuerpo"><h2>Ajustes</h2>' +
+      '<fieldset><legend class="etiqueta">Tema</legend>' +
+      [['auto', 'Automático (sigue el sistema)'], ['oscuro', 'Oscuro'], ['claro', 'Claro']].map(([v, t]) =>
+        '<label class="casilla"><input type="radio" name="tema" value="' + v + '"' + (ajustes.tema === v ? ' checked' : '') + '> ' + t + '</label>').join('') +
+      '</fieldset>' +
+      '<fieldset><legend class="etiqueta">Respaldo</legend>' +
+      '<p class="micro">Tus datos viven solo en este navegador. Descarga un respaldo de vez en cuando.</p>' +
+      '<div class="fila-botones"><button type="button" class="boton compacto" id="aj-exportar">Exportar respaldo</button>' +
+      '<button type="button" class="boton compacto" id="aj-importar">Importar respaldo</button></div></fieldset>' +
+      '<fieldset><legend class="etiqueta">Datos de prueba</legend>' +
+      '<p class="micro">Borra tus datos y vuelve a cargar las 20 oportunidades de ejemplo.</p>' +
+      '<div><button type="button" class="boton peligro compacto" id="aj-restablecer">Restablecer datos de prueba</button></div></fieldset>' +
+      '</div><div class="dialogo-pie"><button class="boton" value="cerrar">Cerrar</button></div></form>',
+      null,
+      d => {
+        $$('input[name="tema"]', d).forEach(r => r.addEventListener('change', () => cambiarTema(r.value)));
+        $('#aj-exportar', d).addEventListener('click', exportar);
+        $('#aj-importar', d).addEventListener('click', () => { d.close(); importar(); });
+        $('#aj-restablecer', d).addEventListener('click', () => { d.close(); restablecer(); });
+        const marcado = $('input[name="tema"]:checked', d); if (marcado) marcado.focus();
+      });
+  }
+  function restablecer() {
+    confirmar('Restablecer datos de prueba', 'Se borrarán tus <strong>' + datos.oportunidades.length + '</strong> oportunidades y se cargarán las 20 de ejemplo. Descarga un respaldo antes si quieres conservarlas.',
+      'Restablecer', true, ok => {
+        if (!ok) return;
+        datos = { esquema: ESQUEMA, oportunidades: datosDePrueba() };
+        guardar();
+        if (fichaId) { focoAntesFicha = null; cerrarFicha(); }
+        refrescar();
+        avisar('Se cargaron las 20 oportunidades de prueba.', 'ok');
+      });
+  }
+
+  /* =======================================================
+     PALETA ⌘K (T-020, T-021)
+     ======================================================= */
+  let paletaItems = [];
+  let paletaSel = 0;
+  let focoAntesPaleta = null;
+  function accionesPaleta() {
+    return [
+      { texto: 'Nueva oportunidad', der: 'N', run: () => nuevaOportunidad() },
+      { texto: 'Ir a Inicio', run: () => ir('inicio') },
+      { texto: 'Ir a Pipeline', run: () => ir('pipeline') },
+      { texto: 'Ir a Tabla', run: () => ir('tabla') },
+      { texto: 'Exportar respaldo', run: exportar },
+      { texto: 'Importar respaldo', run: importar },
+      { texto: 'Cambiar tema', der: { auto: 'Automático', oscuro: 'Oscuro', claro: 'Claro' }[ajustes.tema], run: () => cambiarTema(ajustes.tema === 'oscuro' ? 'claro' : ajustes.tema === 'claro' ? 'auto' : 'oscuro') },
+      { texto: 'Ajustes', run: abrirAjustes }
+    ];
+  }
+  function normalizar(s) { return String(s).toLocaleLowerCase('es').normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+  function abrirPaleta() {
+    const p = $('#paleta');
+    if (p.open) return;
+    if ($('#dialogo').open) return;
+    focoAntesPaleta = document.activeElement;
+    $('#paleta-input').value = '';
+    renderPaleta();
+    p.showModal();
+    $('#paleta-input').focus();
+  }
+  function cerrarPaleta() { const p = $('#paleta'); if (p.open) p.close(); }
+  $('#paleta').addEventListener('close', () => {
+    if (focoAntesPaleta && document.contains(focoAntesPaleta)) focoAntesPaleta.focus();
+    focoAntesPaleta = null;
+  });
+  function renderPaleta() {
+    const q = normalizar($('#paleta-input').value.trim());
+    const grupos = [];
+    const ops = datos.oportunidades.filter(o => !q || normalizar(o.nombre).includes(q) || normalizar(o.cliente).includes(q))
+      .slice(0, q ? 8 : 5)
+      .map(o => ({ texto: o.cliente + ' — ' + o.nombre, der: clp(o.monto) + ' · ' + ETAPA[o.etapa].nombre, run: () => abrirFicha(o.id) }));
+    if (ops.length) grupos.push(['Oportunidades', ops]);
+    if (q) {
+      const clientes = [...new Set(datos.oportunidades.map(o => o.cliente))].filter(c => normalizar(c).includes(q)).slice(0, 5)
+        .map(c => ({ texto: c, der: datos.oportunidades.filter(o => o.cliente === c).length + ' en la tabla', run: () => { filtros.texto = c; filtros.tipo = ''; filtros.etapa = ''; filtros.riesgo = false; if (vistaActual() === 'tabla') { $('#vista').innerHTML = ''; render(); } else ir('tabla'); } }));
+      if (clientes.length) grupos.push(['Clientes', clientes]);
+    }
+    const acc = accionesPaleta().filter(a => !q || normalizar(a.texto).includes(q));
+    if (acc.length) grupos.push(['Acciones', acc]);
+    if (!grupos.length) {
+      const texto = $('#paleta-input').value.trim();
+      grupos.push(['Sin resultados para "' + texto + '"', [{ texto: 'Crear oportunidad "' + texto + '"', der: 'Enter', run: () => nuevaOportunidad(texto) }]]);
+    }
+    paletaItems = [];
+    let html = '';
+    grupos.forEach(([titulo, items], gi) => {
+      html += '<div class="paleta-grupo etiqueta" role="presentation" id="pg-' + gi + '">' + esc(titulo) + '</div><div role="group" aria-labelledby="pg-' + gi + '">';
+      items.forEach(it => {
+        const i = paletaItems.length;
+        paletaItems.push(it);
+        html += '<div class="paleta-item" role="option" id="pi-' + i + '" data-i="' + i + '" aria-selected="false"><span title="' + esc(it.texto) + '">' + esc(it.texto) + '</span>' + (it.der ? '<span class="der">' + esc(it.der) + '</span>' : '') + '</div>';
+      });
+      html += '</div>';
+    });
+    $('#paleta-lista').innerHTML = html;
+    seleccionarPaleta(0);
+  }
+  function seleccionarPaleta(i) {
+    if (!paletaItems.length) return;
+    paletaSel = (i + paletaItems.length) % paletaItems.length;
+    $$('.paleta-item').forEach(el => el.setAttribute('aria-selected', String(Number(el.dataset.i) === paletaSel)));
+    const el = $('#pi-' + paletaSel);
+    $('#paleta-input').setAttribute('aria-activedescendant', 'pi-' + paletaSel);
+    if (el) el.scrollIntoView({ block: 'nearest' });
+  }
+  function ejecutarPaleta(i) {
+    const it = paletaItems[i];
+    if (!it) return;
+    focoAntesPaleta = null;
+    cerrarPaleta();
+    it.run();
+  }
+  $('#paleta-input').addEventListener('input', renderPaleta);
+  $('#paleta-input').addEventListener('keydown', ev => {
+    if (ev.key === 'ArrowDown') { ev.preventDefault(); seleccionarPaleta(paletaSel + 1); }
+    else if (ev.key === 'ArrowUp') { ev.preventDefault(); seleccionarPaleta(paletaSel - 1); }
+    else if (ev.key === 'Enter') { ev.preventDefault(); ejecutarPaleta(paletaSel); }
+  });
+  $('#paleta-lista').addEventListener('click', ev => {
+    const el = ev.target.closest('.paleta-item');
+    if (el) ejecutarPaleta(Number(el.dataset.i));
+  });
+  $('#paleta-lista').addEventListener('mousemove', ev => {
+    const el = ev.target.closest('.paleta-item');
+    if (el && Number(el.dataset.i) !== paletaSel) seleccionarPaleta(Number(el.dataset.i));
+  });
+  $('#paleta').addEventListener('click', ev => { if (ev.target === $('#paleta')) cerrarPaleta(); });
+
+  /* =======================================================
+     EVENTOS GLOBALES
+     ======================================================= */
+  window.addEventListener('hashchange', () => { render(); $('#vista').focus({ preventScroll: true }); });
+  $('#btn-nueva').addEventListener('click', () => nuevaOportunidad());
+  $('#btn-paleta').addEventListener('click', abrirPaleta);
+  $('#btn-ajustes').addEventListener('click', abrirAjustes);
+  $('#aviso-cerrar').addEventListener('click', ocultarAviso);
+
+  function esCampoEditable(el) {
+    return el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT' || el.isContentEditable);
+  }
+  document.addEventListener('keydown', ev => {
+    const mod = esMac ? ev.metaKey : ev.ctrlKey;
+    if (mod && !ev.altKey && !ev.shiftKey && (ev.key || '').toLowerCase() === 'k') {
+      ev.preventDefault();
+      if ($('#paleta').open) cerrarPaleta(); else abrirPaleta();
+      return;
+    }
+    if ($('#paleta').open || $('#dialogo').open) return;
+    if (ev.key === 'Escape' && fichaId) { ev.preventDefault(); cerrarFicha(); return; }
+    if (esCampoEditable(ev.target)) return;
+    if ((ev.key === 'n' || ev.key === 'N') && !ev.ctrlKey && !ev.metaKey && !ev.altKey) {
+      ev.preventDefault(); nuevaOportunidad(); return;
+    }
+    const abrible = ev.target.closest && ev.target.closest('[data-abrir]');
+    if (abrible && (ev.key === 'Enter' || ev.key === ' ') && ev.target === abrible) {
+      ev.preventDefault(); abrirFicha(abrible.dataset.id); return;
+    }
+    const tarjetaEl = ev.target.closest && ev.target.closest('.tarjeta');
+    if (tarjetaEl && ev.altKey && (ev.key === 'ArrowLeft' || ev.key === 'ArrowRight')) {
+      ev.preventDefault();
+      const o = buscar(tarjetaEl.dataset.id);
+      const i = ETAPAS.findIndex(e => e.id === o.etapa) + (ev.key === 'ArrowRight' ? 1 : -1);
+      if (i >= 0 && i < ETAPAS.length) moverA(o.id, ETAPAS[i].id, () => { const t = $('#vista [data-id="' + o.id + '"]'); if (t) t.focus(); });
+    }
+  });
+
+  /* Clics dentro de las vistas */
+  $('#vista').addEventListener('click', ev => {
+    const orden = ev.target.closest('[data-orden]');
+    if (orden) {
+      const c = orden.dataset.orden;
+      if (filtros.orden === c) filtros.dir *= -1; else { filtros.orden = c; filtros.dir = COLUMNAS.find(x => x.id === c).num ? -1 : 1; }
+      renderTabla();
+      const b = $('[data-orden="' + c + '"]'); if (b) b.focus();
+      return;
+    }
+    const acc = ev.target.closest('[data-accion="nueva"]');
+    if (acc) { nuevaOportunidad(); return; }
+    const abrible = ev.target.closest('[data-abrir]');
+    if (abrible) abrirFicha(abrible.dataset.id);
+  });
+  $('#vista').addEventListener('input', ev => {
+    if (ev.target.id === 'tabla-buscar') { filtros.texto = ev.target.value; renderTabla(); }
+  });
+  $('#vista').addEventListener('change', ev => {
+    if (ev.target.id === 'tabla-tipo') filtros.tipo = ev.target.value;
+    else if (ev.target.id === 'tabla-etapa') filtros.etapa = ev.target.value;
+    else if (ev.target.id === 'tabla-riesgo') filtros.riesgo = ev.target.checked;
+    else return;
+    renderTabla();
+  });
+
+  /* Arrastrar y soltar en el pipeline */
+  let arrastrandoId = null;
+  $('#vista').addEventListener('dragstart', ev => {
+    const t = ev.target.closest && ev.target.closest('.tarjeta');
+    if (!t) return;
+    arrastrandoId = t.dataset.id;
+    t.classList.add('arrastrando');
+    ev.dataTransfer.effectAllowed = 'move';
+    ev.dataTransfer.setData('text/plain', arrastrandoId);
+  });
+  $('#vista').addEventListener('dragend', ev => {
+    const t = ev.target.closest && ev.target.closest('.tarjeta');
+    if (t) t.classList.remove('arrastrando');
+    $$('.columna.destino').forEach(c => c.classList.remove('destino'));
+    arrastrandoId = null;
+  });
+  $('#vista').addEventListener('dragover', ev => {
+    const col = ev.target.closest && ev.target.closest('.columna');
+    if (!col || !arrastrandoId) return;
+    ev.preventDefault();
+    ev.dataTransfer.dropEffect = 'move';
+    $$('.columna.destino').forEach(c => { if (c !== col) c.classList.remove('destino'); });
+    col.classList.add('destino');
+  });
+  $('#vista').addEventListener('dragleave', ev => {
+    const col = ev.target.closest && ev.target.closest('.columna');
+    if (col && !col.contains(ev.relatedTarget)) col.classList.remove('destino');
+  });
+  $('#vista').addEventListener('drop', ev => {
+    const col = ev.target.closest && ev.target.closest('.columna');
+    if (!col) return;
+    ev.preventDefault();
+    const id = ev.dataTransfer.getData('text/plain') || arrastrandoId;
+    col.classList.remove('destino');
+    arrastrandoId = null;
+    if (id) moverA(id, col.dataset.etapa);
+  });
+
+  /* Ficha: cerrar, editar, acciones */
+  $('#ficha').addEventListener('click', ev => {
+    if (ev.target.closest('#ficha-cerrar')) { cerrarFicha(); return; }
+    const b = ev.target.closest('[data-accion]');
+    if (!b) return;
+    const o = buscar(fichaId);
+    if (!o) return;
+    const a = b.dataset.accion;
+    if (a === 'ganar') { moverA(o.id, 'ganada', ok => { if (ok) { mostrarGuardado(); avisar('Oportunidad marcada como ganada.', 'ok'); } }); }
+    else if (a === 'perder') { moverA(o.id, 'perdida', ok => { if (ok) mostrarGuardado(); }); }
+    else if (a === 'reabrir') { moverA(o.id, 'negociacion', ok => { if (ok) { mostrarGuardado(); avisar('Oportunidad reabierta en Negociación.', 'ok'); } }); }
+    else if (a === 'eliminar') eliminar(o);
+  });
+  $('#ficha').addEventListener('change', ev => {
+    if (ev.target.dataset && ev.target.dataset.campo) guardarCampo(ev.target);
+  });
+  $('#ficha').addEventListener('keydown', ev => {
+    if (ev.key === 'Enter' && ev.target.dataset && ev.target.dataset.campo && ev.target.tagName === 'INPUT') {
+      ev.preventDefault(); ev.target.blur();
+    }
+  });
+  $('#ficha').addEventListener('submit', ev => {
+    if (ev.target.id === 'form-actividad') { ev.preventDefault(); registrarActividad(); }
+  });
+
+  /* =======================================================
+     PRUEBAS RÁPIDAS (T-004) — Pulso.pruebas() en la consola
+     ======================================================= */
+  function pruebas() {
+    const h = hoy();
+    const base = { etapa: 'propuesta', monto: 1000000, creada: sumarDias(h, -40), actividades: [], cierre: sumarDias(h, 30) };
+    const casos = [
+      ['1250000 → $1.250.000', clp(1250000).replace(/\u00a0/g, ' ') === '$1.250.000'],
+      ['12500000 abreviado → $12,5 M', clpCorto(12500000).replace(/\u00a0/g, ' ') === '$12,5 M'],
+      ['RUT 11.111.111-1 válido', rutValido('11.111.111-1')],
+      ['RUT 11.111.111-2 no válido', !rutValido('11.111.111-2')],
+      ['Negociación → 75 %', probabilidad({ etapa: 'negociacion' }) === 75],
+      ['15 días sin actividad → en riesgo', enRiesgo(Object.assign({}, base, { actividades: [{ id: 'x', fecha: sumarDias(h, -15), texto: '' }] }))],
+      ['14 días sin actividad → sin riesgo', !enRiesgo(Object.assign({}, base, { actividades: [{ id: 'x', fecha: sumarDias(h, -14), texto: '' }] }))],
+      ['Cierre ayer → en riesgo', enRiesgo(Object.assign({}, base, { actividades: [{ id: 'x', fecha: h, texto: '' }], cierre: sumarDias(h, -1) }))],
+      ['Ganada nunca en riesgo', !enRiesgo(Object.assign({}, base, { etapa: 'ganada', cierre: sumarDias(h, -10) }))],
+      ['Fecha → dd-mm-aaaa', fecha('2026-03-05') === '05-03-2026'],
+      ['Monto -5 no válido', leerMonto('-5') === null],
+      ['Monto 1.250.000 válido', leerMonto('1.250.000') === 1250000]
+    ];
+    casos.forEach(([n, ok]) => console.log((ok ? 'OK   ' : 'FALLA') + ' ' + n));
+    const todo = casos.every(c => c[1]);
+    console.log(todo ? 'OK: todas las pruebas pasaron' : 'FALLA: revisa los casos marcados');
+    return todo;
+  }
+
+  /* =======================================================
+     INICIO
+     ======================================================= */
+  $('#atajo-paleta').textContent = esMac ? '⌘K' : 'Ctrl K';
+  cargar();
+  aplicarTema();
+  if (!VISTAS.includes(location.hash.replace('#', ''))) {
+    try { history.replaceState(null, '', '#inicio'); } catch (e) { /* file:// en algunos navegadores */ }
+  }
+  render();
+
+  window.Pulso = {
+    pruebas,
+    _interno: { hoy, enRiesgo, ponderado, probabilidad, ultimaActividad, rutValido, clp, clpCorto, fecha, datos: () => datos, cantidadRiesgo, pipelinePonderado, pronosticoMes, ganadoMes, seguimientoHoy }
+  };
+})();
+</script>
+</body>
+</html>

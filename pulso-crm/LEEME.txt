@@ -1,0 +1,29 @@
+PULSO — carpeta del proyecto
+============================
+
+Ubicación prevista: C:\Users\jesus\Downloads\pulso-crm
+
+Contenido
+---------
+CLAUDE.md                               Reglas del producto (las lee Claude Code al abrir la carpeta)
+DESIGN.md                               Capa visual: tokens, reglas y componentes (Tech Brutalist)
+.project\vision.md                      Qué es Pulso, para quién y qué queda fuera
+.project\requisitos.md                  REQ-001 a REQ-022 con criterios de aceptación
+.project\tasks.md                       T-001 a T-032 con su estado
+.project\workflow.md                    Proceso de cada vuelta (implementar -> revisar -> done)
+.claude\settings.json                   Bloquea editar DESIGN.md y requisitos.md
+.claude\agents\revisor.md               Sub-agente: revisa la tarea contra su Aceptación
+.claude\agents\revisor-visual.md        Sub-agente: revisa index.html contra DESIGN.md
+.claude\skills\revisar-interfaz\SKILL.md  Skill: checklist de interfaz con tabla de resultado
+
+index.html                              La app: ábrela con doble clic (no necesita internet ni servidor)
+
+Estado: T-001 a T-028 hechas; pendientes T-029 a T-032 (ver .project\tasks.md).
+
+Cómo continuar
+--------------
+Abre la carpeta pulso-crm en Claude Code (o vincúlala a una tarea de Claude desde la app
+de escritorio) y pide: "Sigue .project/workflow.md con la siguiente tarea".
+
+Nota: las carpetas .project y .claude empiezan con punto; en Windows se ven normalmente,
+pero algunos programas las ocultan.
